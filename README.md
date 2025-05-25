@@ -1,3 +1,10 @@
+## Omega RAG
+
+Omega RAG provides a framework to combine several advanced RAG techniques into a high-performing RAG pipeline.
+Query Rewriting, Hyde, Adaptive retrieval (no retrieval, single-step, iterative retrieval), Correction by retrieval evaluation and confidence scoring, Unified active retrieval, Reranking, Citation generation, User feedback, Hybrid structured router, Scattered knowledge structurizer and Structured knowledge utilizer.  
+
+Under active development.
+
 ## LLM-Finetuning
 **Github**: [avnlp/llm-finetuning](https://github.com/avnlp/llm-finetuning)
 
