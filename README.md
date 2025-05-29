@@ -25,18 +25,14 @@ It is particularly effective for large language models, offering a scalable and 
 
 Prompt Tuning is a method for adapting pre-trained models by optimizing a set of task-specific prompt tokens, without modifying the model’s core parameters. These prompt tokens are prepended or appended to the input sequence, serving as a fixed, learnable set of parameters that guide the model's output generation.
 
-Self-RAG Training
-The model learns a special “retrieve” token that tells it whether to call the retriever at each generation step. It can adaptively retrieve zero, one, or multiple passages as needed, rather than always fetching a fixed number.
+In Self-RAG, the model learns a special “retrieve” token that tells it whether to call the retriever at each generation step. It can adaptively retrieve zero, one, or multiple passages as needed, rather than always fetching a fixed number.
 
-Reflection Tokens for Critique
-In addition to ordinary text tokens, the model is trained to emit “reflection” tokens at each segment:
+Reflection Tokens for Critique - In addition to ordinary text tokens, the model is trained to emit “reflection” tokens at each segment:  
+- ISREL (Is Retrieval Useful?): predicts if retrieved passages are relevant.
+- ISSUP (Is Support Adequate?): evaluates whether retrieved passages sufficiently support the next generation.
+- ISUSE (Is Output Useful?): judges the overall quality and utility of the continuation.
 
-ISREL (Is Retrieval Useful?): predicts if retrieved passages are relevant.
-
-ISSUP (Is Support Adequate?): evaluates whether retrieved passages sufficiently support the next generation.
-
-ISUSE (Is Output Useful?): judges the overall quality and utility of the continuation.
-These tokens train the model to self-assess its retrieval and generation
+These tokens train the model to self-assess its retrieval and generation.
 
 ## Rankers
 
