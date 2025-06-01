@@ -41,8 +41,6 @@ These tokens train the model to self-assess its retrieval and generation.
 
 In RAG pipelines, top-K documents are first retrieved from a vector store. This initial retrieval prioritizes speed and recall, bringing a broad set of candidate documents. These documents are then sent to a re-ranker which orders these documents based on their relevance to the query. The re-ranker utilizes a LLM and is more computationally expensive than the retrieval stage. The re-ranker can use Pointwise, Pairwise, Listwise or Setwise ranking techniques. In this paper we have analyzed the performance of these techniques on the FiQA, SciFact, NFCorpus, TREC-19, and TREC-20 datasets. We evaluated multiple LLM-based rankers including Mistral, Phi-3, LLama-3, RankLlama (7B), and RankZephyr, comparing their effectiveness using the NDCG metric.
 
-The results indicate a clear advantage for Listwise re-ranking as implemented by RankZephyr, followed by Pointwise re-ranking with RankLlama (7B). For other LLMs like LLama-3, Setwise techniques tended to perform slightly better than Pairwise, though both significantly enhanced retrieval quality over the baseline.
-
 ## RRF
 **Github:** [avnlp/rrf](https://github.com/avnlp/rrf)
 
