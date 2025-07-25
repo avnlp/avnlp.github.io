@@ -1,4 +1,5 @@
 ## Biothink
+
 **Github**:[https://github.com/avnlp/biothink](https://github.com/avnlp/biothink)
 
 - Developed BioThink, a framework featuring self-reflective reasoning, where the model explicitly structures its reasoning process within <think> </think> XML tags and performs self-evaluation using specialized tokens (Relevance, Grounding, Utility) to critically assess its own output quality and alignment on Bio-Medical question-answering.
@@ -9,7 +10,8 @@
 - Further work to incorporate additional retrieval mechanisms into BioThink based on Adaptive RAG, Corrective RAG, RQ-RAG are ongoing.
 
 ## RAG-Model-Training
-**Github**: [https://github.com/avnlp/rag-model-training] ​(https://github.com/avnlp/rag-model-training)​
+
+**Github**: [https://github.com/avnlp/rag-model-training](https://github.com/avnlp/rag-model-training)​
 - Trained a T5 model for query complexity classifier for Adaptive RAG on a combination of Musique, NQ, TriviaQA and HotpotQA datasets. The model classifies the query into Simple/Moderate/Complex based on whether the query can be answered without retrieval, single retrieval or multiple retrievals.
 - Trained a T5 model for retrieval evaluation on the Corrective RAG dataset to classify documents as 'Correct', 'Ambiguous', or 'Incorrect'.
 - Fine-tuned a Llama-3.2 model for 3-stage query refinement (rewriting/decomposition/disambiguation) RQ-RAG technique.
