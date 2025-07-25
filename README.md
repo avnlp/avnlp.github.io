@@ -16,10 +16,10 @@
 The model is trained to generate '[Rewritten_Query]', '[Decomposed_Query]' and '[Disambiguated_Query]' tokens.
 - Trained a T5 model for Self-RAG on the Earnings-Call data. Created training data with the reflection tokens (Retrieval/Relevance/Grounding/Utility). Trained the model in two phases: critic model to evaluate retrieval and a generator model using the critic's feedback to generate responses.
 - Fine-tuned Llama-3-8B with GRPO on TriviaQA for Agentic RAG, enabling autonomous missing-info detection, query rewriting, and validated tool-call generation using LLM-as-a-Judge rewards.
-- Fine-tuned Llama-3-8B with GRPO on TriviaQA for ReZero Agentic RAG - search retrying and query refinement. A composite LLM-as-a-Judge reward function was used for enforcing response structure
-(<think>/<search>/<answer>/<information>).
+- Fine-tuned Llama-3-8B with GRPO on TriviaQA for ReZero Agentic RAG - search retrying and query refinement. A composite LLM-as-a-Judge reward function was used for enforcing response structure.
 
-**GRPO**
+## GRPO
+
 **Github:** [https://github.com/avnlp/grpo](https://github.com/avnlp/grpo)
 - Compared four implementations of GRPO from scratch, each demonstrating different approaches to the core algorithm while
 sharing common principles.
@@ -77,7 +77,8 @@ complexity than PRP-allpair while also being largely insensitive to input orders
 - 'PRP-sliding_k' uses a sliding window that starts at the bottom of the initial ranking, compares pairs of documents, and
 swaps document pairs with a stride of 1. It has favorable time complexity but has high dependency on input order.
 - Evaluated the performance of the ranker on the FIQA, SciFact, NFCorpus, TREC-19, and TREC-20 datasets using the
-Mistral, Phi-3, and Llama-3 models.●​ The 'PRP-allpair' with the Llama-3 model performed the best across all datasets. 'PRP-sliding_k' and 'PRP-heapsort' perform
+Mistral, Phi-3, and Llama-3 models.
+- The 'PRP-allpair' with the Llama-3 model performed the best across all datasets. 'PRP-sliding_k' and 'PRP-heapsort' perform
 similarly across all datasets.
 
 ## RRF
