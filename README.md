@@ -35,7 +35,7 @@
 **Github**: [https://github.com/avnlp/llm-finetuning](https://github.com/avnlp/llm-finetuning)
 
 - Fine-tuned models for RAG with Reasoning on HotpotQA, FreshQA, and Musique datasets using QLoRA and GRPO on Llama3.2-3B, implementing four correctness reward functions - DeepEval's GEval with custom LLM-as-a-Judge for RAG, Summarization, Answer Relevancy, and Evidently AI's CorrectnessLLMEval and four format reward functions to enforce '<reasoning>' tags and multiline response compliance.
-- Fine-tuned models for Math Reasoning on GSM8K using QLoRA and GRPO on Phi-4, Mistral-7B, Llama3.2-3B, Llama3.1-8B, and Gemma3-1B to generate step-by-step solutions, applying one correctness reward function and four format reward functions for '<reasoning>' tags and multiline structure.
+- Fine-tuned models for Math Reasoning on GSM8K using QLoRA and GRPO on Phi-4, Mistral-7B, Llama3.2-3B, Llama3.1-8B, and Gemma3-1B to generate step-by-step solutions, applying one correctness reward function and four format reward functions for 'reasoning' tags and multiline structure.
 - Fine-tuned three models for Preference Alignment on UltraFeedback dataset using QLoRA: Zephyr-7B using DPO, Qwen2.5-1.5B via KTO, and Llama-3-8B via DPO, ORPO, and PPO (using LLM-Blender PairRM as reward model).
 - Fine-tuned model for Question-Answering Preference Alignment on the WebGPT comparisons dataset using QLoRA with DPO and PPO (using LLM-Blender PairRM as reward model) on Llama-3-8B.
 - Fine-tuned models for Adapter-based Supervised Fine-tuning using QLoRA, LoRA, DoRA, P-Tuning, and Prefix-Tuning on the ARC, Earnings Call, FactScore, PopQA, and TriviaQA datasets. Compared the performance of different adapter based supervised fine-tuning techniques.
