@@ -2,11 +2,11 @@
 
 **Github**: [https://github.com/avnlp/biothink](https://github.com/avnlp/biothink)
 
-- Developed BioThink, a framework featuring self-reflective reasoning, where the model explicitly structures its reasoning process within <think> </think> XML tags and performs self-evaluation using specialized tokens (Relevance, Grounding, Utility) to critically assess its own output quality and alignment on Bio-Medical question-answering.
+- Developed BioThink, a framework featuring self-reflective reasoning, where the model explicitly structures its reasoning process within 'think' XML tags and performs self-evaluation using specialized tokens (Relevance, Grounding, Utility) to critically assess its own output quality and alignment on Bio-Medical question-answering.
 - Trained the BioThink model on Qwen3-1.7B using QLoRA for efficient parameter adaptation and the GRPO algorithm for alignment, on a corpus of question-answers from MedInstruct, Mol-Instructions, PubMed abstracts, PubMed Central full texts, MedQA, and Clinical Guidelines datasets.
-- Integrated five reward functions with GRPO to enforce generation of self-evaluation tokens (Relevance, Grounding, Utility) and ensure strict adherence to the required XML reasoning structure  tag presence, correct order, and syntactical validity.
+- Integrated five reward functions with GRPO to enforce generation of self-evaluation tokens (Relevance, Grounding, Utility) and ensure strict adherence to the required XML reasoning structure tag presence, correct order, and syntactical validity.
 - Implemented a robust answer correctness reward function and metric using DeepEval's GEval metric, configured with a custom LLM-as-a-Judge instruction tailored for Bio-Medical Question Answering.
-- Systematically assessed model performance across seven metrics: XML Structure integrity for presence/order of all reasoning, answer, and self-eval tags, token accuracy - correct generation of Utility, Relevance, Groundness tokens, Answer Correctness - using custom GEval metric, Faithfulness - adherence to source context , and Answer Relevancy - question alignment using DeepEval's LLM-as-a-Judge metric.
+- Systematically assessed model performance across seven metrics: XML Structure integrity for presence/order of all reasoning, answer, and self-eval tags, token accuracy - correct generation of Utility, Relevance, Groundness tokens, Answer Correctness - using custom GEval metric, Faithfulness - adherence to source context, and Answer Relevancy - question alignment using DeepEval's LLM-as-a-Judge metric.
 - Further work to incorporate additional retrieval mechanisms into BioThink based on Adaptive RAG, Corrective RAG, RQ-RAG are ongoing.
 
 ## RAG-Model-Training
@@ -34,7 +34,7 @@
 
 **Github**: [https://github.com/avnlp/llm-finetuning](https://github.com/avnlp/llm-finetuning)
 
-- Fine-tuned models for RAG with Reasoning on HotpotQA, FreshQA, and Musique datasets using QLoRA and GRPO on Llama3.2-3B, implementing four correctness reward functions - DeepEval's GEval with custom LLM-as-a-Judge for RAG, Summarization, Answer Relevancy, and Evidently AI's CorrectnessLLMEval and four format reward functions to enforce '<reasoning>' tags and multiline response compliance.
+- Fine-tuned models for RAG with Reasoning on HotpotQA, FreshQA, and Musique datasets using QLoRA and GRPO on Llama3.2-3B, implementing four correctness reward functions - DeepEval's GEval with custom LLM-as-a-Judge for RAG, Summarization, Answer Relevancy, and Evidently AI's CorrectnessLLMEval and four format reward functions to enforce 'reasoning' tags and multiline response compliance.
 - Fine-tuned models for Math Reasoning on GSM8K using QLoRA and GRPO on Phi-4, Mistral-7B, Llama3.2-3B, Llama3.1-8B, and Gemma3-1B to generate step-by-step solutions, applying one correctness reward function and four format reward functions for 'reasoning' tags and multiline structure.
 - Fine-tuned three models for Preference Alignment on UltraFeedback dataset using QLoRA: Zephyr-7B using DPO, Qwen2.5-1.5B via KTO, and Llama-3-8B via DPO, ORPO, and PPO (using LLM-Blender PairRM as reward model).
 - Fine-tuned model for Question-Answering Preference Alignment on the WebGPT comparisons dataset using QLoRA with DPO and PPO (using LLM-Blender PairRM as reward model) on Llama-3-8B.
