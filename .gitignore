@@ -1,0 +1,12 @@
+# Local tooling / editor
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# og-image build scratch (Python venv + script + caches)
+logo_edit/
+logo_edits/
+__pycache__/
+*.pyc

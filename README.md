@@ -1,127 +1,190 @@
-## Biothink
+# AVNLP
 
-**Github**: [https://github.com/avnlp/biothink](https://github.com/avnlp/biothink)
+Retrieval &amp; Ranking · RAG · Agents · LLM Training &amp; RL Alignment · Domain-Specific AI
 
-- Developed BioThink, a framework featuring self-reflective reasoning, where the model explicitly structures its reasoning process within 'think' XML tags and performs self-evaluation using specialized tokens (Relevance, Grounding, Utility) to critically assess its own output quality and alignment on Bio-Medical question-answering.
-- Trained the BioThink model on Qwen3-1.7B using QLoRA for efficient parameter adaptation and the GRPO algorithm for alignment, on a corpus of question-answers from MedInstruct, Mol-Instructions, PubMed abstracts, PubMed Central full texts, MedQA, and Clinical Guidelines datasets.
-- Integrated five reward functions with GRPO to enforce generation of self-evaluation tokens (Relevance, Grounding, Utility) and ensure strict adherence to the required XML reasoning structure tag presence, correct order, and syntactical validity.
-- Implemented a robust answer correctness reward function and metric using DeepEval's GEval metric, configured with a custom LLM-as-a-Judge instruction tailored for Bio-Medical Question Answering.
-- Systematically assessed model performance across seven metrics: XML Structure integrity for presence/order of all reasoning, answer, and self-eval tags, token accuracy - correct generation of Utility, Relevance, Groundness tokens, Answer Correctness - using custom GEval metric, Faithfulness - adherence to source context, and Answer Relevancy - question alignment using DeepEval's LLM-as-a-Judge metric.
-- Further work to incorporate additional retrieval mechanisms into BioThink based on Adaptive RAG, Corrective RAG, RQ-RAG are ongoing.
+**GitHub:** [github.com/avnlp](https://github.com/avnlp)
 
-## RAG-Model-Training
+---
 
-**Github**: [https://github.com/avnlp/rag-model-training](https://github.com/avnlp/rag-model-training)​
+## Agentic Graph RAG for Medical Diagnosis
 
-- Trained a Query Complexity Classifier for Adaptive RAG [(https://arxiv.org/abs/2403.14403)](https://arxiv.org/abs/2403.14403) on a combination of Musique, NQ, TriviaQA and HotpotQA datasets. The T5 model is trained to classify the query into Simple/Moderate/Complex based on whether the query can be answered without retrieval, single retrieval or multiple retrievals.
-- Trained a Retrieval Evaluator for Corrective RAG [(https://arxiv.org/abs/2401.15884)](https://arxiv.org/abs/2401.15884) on the dataset provided by the authors. The T5 model is trained to classify documents as 'Correct', 'Ambiguous', or 'Incorrect' based on the input question and retrieved documents.
-- Fine-tuned a 3-Stage Query Refinement model for RQ-RAG [(https://arxiv.org/abs/2404.00610)](https://arxiv.org/abs/2404.00610) (rewriting/decomposition/disambiguation). The Llama-3.2 model is trained to generate '[Rewritten_Query]', '[Decomposed_Query]' and '[Disambiguated_Query]' tokens.
-- Trained a model for Self-Reflective RAG [(https://arxiv.org/abs/2310.11511)](https://arxiv.org/abs/2310.11511) on the Earnings-Call data. Created training data with the reflection tokens (Retrieval/Relevance/Grounding/Utility). Trained the model in two phases: critic training to evaluate retrieval and a generator training for using the critic's feedback to generate responses.
-- Fine-tuned Agentic RAG [(https://github.com/dCaples/AutoDidact)](https://github.com/dCaples/AutoDidact) on TriviaQA with GRPO using multi-turn generation for autonomous missing-info detection, query rewriting, and validated tool-call generation on Llama-3-8B, leveraging LLM-as-a-Judge rewards.
-- Fine-tuned ReZero Agentic RAG [(https://arxiv.org/abs/2504.11001)](https://arxiv.org/abs/2504.11001) on TriviaQA with GRPO for search retrying and query refinement on Llama-3-8B, leveraging a composite LLM-as-a-Judge reward function to enforce response structure.
+**GitHub:** [https://github.com/avnlp/agentic-med-diag](https://github.com/avnlp/agentic-med-diag)  
+**Documentation:** [https://deepwiki.com/avnlp/agentic-med-diag](https://deepwiki.com/avnlp/agentic-med-diag)  
+**Status:** Code coming soon
 
-## GRPO
+- Designed an agentic, multi-hop Graph RAG system for medical question answering that reasons across a medical knowledge graph to resolve complex clinical questions.
+- Architected the system as a hierarchical **LangGraph** state machine: a parent graph fans out to two parallel subgraphs - a semantic channel and a relational channel, each with conditional loop edges - then synthesizes their outputs into a final answer.
+- Decomposed each question into semantic sub-queries (with `#N` back-references) and relational SPO triple queries (with `Entity#N` placeholders), driving two iterative retrieve-and-reason loops: the semantic channel chains sub-query grounding → GraphRAG retrieval → semantic filter → summary → sub-answer → logic drafting → evidence verification → conditional expansion, while the relational channel runs SPO triple queries → KG filter → triplet summaries → sub-answer.
+- Backed the two channels with **Neo4j** for the entity/relationship knowledge graph and **Milvus** for dense semantic retrieval over document chunks.
+- Integrated four runtime-switchable Graph RAG backends, each with a custom `context_filter` that splits retrieved context across the channels: **LightRAG** (dual-level local/global KG in hybrid mode), **MiniRAG** (lightweight, Neo4j-free "light" mode), **PathRAG** (two-tier hierarchy returning reasoning paths between entities), and **HyperGraphRAG** (hyperedges linking multiple entities to capture group clinical relationships).
+- Defined an evaluation protocol benchmarking all four pipelines against their stock backends on **HealthBench**, **MedCaseReasoning**, **MetaMedQA**, and **PubMedQA** with DeepEval's Contextual Recall, Contextual Precision, Contextual Relevancy, Answer Relevancy, and Faithfulness.
 
-**Github:** [https://github.com/avnlp/grpo](https://github.com/avnlp/grpo)
+## BioThink: Self-Reflective Reasoning for Biomedical Question Answering
 
-- Compared four implementations of GRPO from scratch, each demonstrating different approaches to the core algorithm while sharing common principles.
-- Refactored the implementations to highlight the differences in the implementation of the core algorithm, reward functions, training frameworks, and reference model handling.
-- The implementations share the Group Sampling, Reward Calculation, Advantage Normalization and Policy Update steps.
-- Each implementation has different reward functions tailored to the task. There are Format Reward functions for enforcing XML-style reasoning and Correctness Reward functions to validate accuracy. The implementations use different training frameworks (e.g., DeepSpeed, pure PyTorch). Their approaches to generation - vLLM, HuggingFace transformers and batching also vary.
-- Some implementations use a fixed reference model (via a separate server or a frozen copy) while others update the reference model periodically.
+**GitHub:** [https://github.com/avnlp/biothink](https://github.com/avnlp/biothink)  
+**Documentation:** [https://deepwiki.com/avnlp/biothink](https://deepwiki.com/avnlp/biothink)  
+**Model:** [BioThink-Qwen3-1.7B](https://huggingface.co/avnlp/BioThink-Qwen3-1.7B)  
+**Dataset:** [self_biorag_processed](https://huggingface.co/datasets/avnlp/self_biorag_processed)  
 
-## LLM-Finetuning
+- Developed **BioThink**, a self-reflective biomedical question-answering framework inspired by Self-RAG and built on Self-BioRAG, that fine-tunes **Qwen3-1.7B** to interleave reasoning, answering, and self-critique in a single structured generation.
+- Trained the model to emit a fixed XML schema: step-by-step reasoning in `<think>`, a concise `<answer>`, and three self-reflection signals - `<contextual-relevance>` (`[Relevant]`/`[Irrelevant]`), `<answer-utility>` (`[Utility:1]`–`[Utility:5]`), and `<groundness>` (`[Fully supported]`/`[Partially supported]`/`[No support/Contradictory]`).
+- Aligned the model with **GRPO** (using QLoRA and Unsloth for efficient fine-tuning) under six reward functions: a Correctness reward (DeepEval's GEval with a custom biomedical LLM-as-a-Judge), Utility/Relevance/Groundness token rewards, an XML Structure reward (tag presence and open/close), and a Structure Order reward enforcing correct tag order with no stray text.
+- Processed the Self-BioRAG dataset into question, answer, and context fields plus groundness, relevance, and utility labels, releasing it as `avnlp/self_biorag_processed` and publishing the trained model as `avnlp/BioThink-Qwen3-1.7B`.
+- Systematically assessed generations across seven metrics: XML structure integrity, correct Utility/Relevance/Groundness tokens, Answer Correctness (custom GEval), Faithfulness, and Answer Relevancy via DeepEval's LLM-as-a-Judge metrics.
 
-**Github**: [https://github.com/avnlp/llm-finetuning](https://github.com/avnlp/llm-finetuning)
+## RAG Model Training
 
-- Fine-tuned models for RAG with Reasoning on HotpotQA, FreshQA, and Musique datasets using QLoRA and GRPO on Llama3.2-3B, implementing four correctness reward functions - DeepEval's GEval with custom LLM-as-a-Judge for RAG, Summarization, Answer Relevancy, and Evidently AI's CorrectnessLLMEval and four format reward functions to enforce 'reasoning' tags and multiline response compliance.
-- Fine-tuned models for Math Reasoning on GSM8K using QLoRA and GRPO on Phi-4, Mistral-7B, Llama3.2-3B, Llama3.1-8B, and Gemma3-1B to generate step-by-step solutions, applying one correctness reward function and four format reward functions for 'reasoning' tags and multiline structure.
-- Fine-tuned three models for Preference Alignment on UltraFeedback dataset using QLoRA: Zephyr-7B using DPO, Qwen2.5-1.5B via KTO, and Llama-3-8B via DPO, ORPO, and PPO (using LLM-Blender PairRM as reward model).
-- Fine-tuned model for Question-Answering Preference Alignment on the WebGPT comparisons dataset using QLoRA with DPO and PPO (using LLM-Blender PairRM as reward model) on Llama-3-8B.
-- Fine-tuned models for Adapter-based Supervised Fine-tuning using QLoRA, LoRA, DoRA, P-Tuning, and Prefix-Tuning on the ARC, Earnings Call, FactScore, PopQA, and TriviaQA datasets. Compared the performance of different adapter based supervised fine-tuning techniques.
+**GitHub:** [https://github.com/avnlp/rag-model-training](https://github.com/avnlp/rag-model-training)  
+**Documentation:** [https://deepwiki.com/avnlp/rag-model-training](https://deepwiki.com/avnlp/rag-model-training)  
+
+- Reproduced the original training methodologies behind six advanced RAG techniques, each targeting a different component of the pipeline - retrieval-strategy selection, retrieval-quality evaluation, query refinement, self-reflection, or autonomous agentic search.
+- **Adaptive-RAG (SFT):** trained a T5-large query-complexity classifier that routes each query to no-retrieval, single-step, or multi-step retrieval (Simple/Moderate/Complex), on data drawn from Musique and other multi-hop QA datasets.
+- **Corrective RAG (SFT):** trained a T5-large retrieval evaluator that grades retrieved documents as Correct/Ambiguous/Incorrect with a −1 to 1 relevance score, powering the decompose-then-recompose correction strategy, on the CRAG dataset.
+- **RQ-RAG (SFT):** fine-tuned Llama-3.2-3B with an expanded vocabulary to refine queries through `[S_Rewritten_Query]`, `[S_Decomposed_Query]`, and `[S_Disambiguated_Query]` control tokens under a tree-based generate → retrieve → refine decoding strategy.
+- **Self-RAG (two-phase SFT):** trained a T5-base critic and generator in sequence to emit `[Retrieval]`, `[Relevant]`, `[Grounded]`, and `[Utility:1–5]` reflection tokens, applied to the financial Earnings Calls domain.
+- **Agentic RAG (GRPO):** fine-tuned Llama-3.1-8B with LoRA on TriviaQA + FAISS retrieval (vLLM-served, up to 6 search-refinement cycles) using Correctness (LLM-as-a-Judge) and Formatting rewards for autonomous missing-information detection, query rewriting, and tool-call generation.
+- **ReZero (GRPO):** fine-tuned Llama-3.2-8B with rank-64 LoRA on TriviaQA + multilingual-e5-large + FAISS (up to 32 cycles), rewarding search persistence through six composite signals - Correctness, Formatting, Retry, EM-Chunk, Search Strategy, and Search Diversity - over `think`/`search`/`answer` tags.
+
+## Group Relative Policy Optimization (GRPO)
+
+**GitHub:** [https://github.com/avnlp/grpo](https://github.com/avnlp/grpo)  
+**Documentation:** [https://deepwiki.com/avnlp/grpo](https://deepwiki.com/avnlp/grpo)  
+
+- Aggregated and refactored four open-source GRPO implementations under a shared structure, isolating how each makes different systems choices around the same core algorithm.
+- GRPO replaces the learned value function with the group-average reward of sampled responses as the baseline, normalizes rewards within each group into per-output advantages, and regularizes with a KL term in the loss - eliminating the memory and compute overhead of PPO-style critics.
+- Unified four implementations under one codebase: **nanoAhaMoment** (vLLM with sleep/wake GPU sharing, DeepSpeed ZeRO-2, REINFORCE+KL), **GRPO:Zero** (custom Transformer/KV-cache loop on Qwen2.5-3B-Instruct, pure REINFORCE, no reference model), **Simple GRPO** (DeepSpeed, reference log-probs offloaded to a separate Bottle HTTP server, PPO-clip+KL), and **GRPO from Scratch** from Andriy Burkov's LM Book (pure PyTorch, `copy.deepcopy` reference per outer iteration, μ updates per batch).
+- Dissected the sharpest divergence - the generation backend: vLLM with PagedAttention and sleep mode, a hand-written autoregressive KV-cache loop, and HuggingFace `model.generate()` with captured generation log-probs for exact-policy ratio clipping.
+- Contrasted reference-policy handling across the four: a CPU-offloaded DeepSpeed copy, no reference at all, a frozen out-of-process server, and a per-iteration `copy.deepcopy` that lags by one iteration.
+- Spanned the Countdown and GSM8K tasks across Qwen2.5 (0.5B–7B) models with combined correctness + format rewards over `<think>/<answer>` (or `<reasoning>/<answer>`) tags, documenting each variant's group size, KL coefficient, clip ε, reward range, and optimizer/learning rate.
+
+## LLM Fine-tuning
+
+**GitHub:** [https://github.com/avnlp/llm-finetuning](https://github.com/avnlp/llm-finetuning)  
+**Documentation:** [https://deepwiki.com/avnlp/llm-finetuning](https://deepwiki.com/avnlp/llm-finetuning)  
+
+- Built 39 fine-tuning pipelines across 16 datasets spanning three paradigms - adapter-based SFT, GRPO reinforcement learning, and preference alignment - on **TRL**, **PEFT**, and **Unsloth** with composable reward functions and LLM-as-a-Judge evaluation.
+- **Adapter SFT (25 pipelines):** fine-tuned Llama-3.2-3B with five parameter-efficient methods - LoRA and QLoRA (rank 8, alpha 32), DoRA (weight-decomposed), P-Tuning, and Prefix-Tuning - on ARC, TriviaQA, FactScore, PopQA, and Earnings Calls, comparing the adapter techniques head-to-head.
+- **Math reasoning (GRPO):** trained Phi-4, Mistral-7B, Llama-3.2-3B, Llama-3.1-8B, and Gemma3-1B on GSM8K with one correctness reward (numeric extraction from `<answer>`) and four format rewards (reasoning-tag nesting, ≥3 numbered steps, multi-line depth, block presence); a two-stage Qwen-3 Base pipeline first ran SFT on OpenR1-Math-220k to prime the format, then GRPO on GSM8K.
+- **Multi-hop and medical QA (GRPO):** fine-tuned Llama-3.2-3B with eight reward functions - four correctness (DeepEval GEval-for-RAG, Summarization, Answer Relevancy, Evidently AI CorrectnessLLMEval) and four format - on HotpotQA, FreshQA, and MuSiQue, then reused the same architecture for biomedical reasoning on MedQA, BioASQ, and PubMedQA.
+- **Preference alignment:** aligned models over QLoRA with four algorithms - DPO (Zephyr-7B/UltraFeedback, Llama-3-8B/WebGPT), ORPO (Llama-3-8B/UltraFeedback), KTO (Qwen2.5-1.5B/KTO-Mix-14k), and PPO (Llama-3-8B on UltraFeedback and WebGPT, scored by an OpenAssistant DeBERTa-v3 reward model).
+
+## RAG Pipelines
+
+**GitHub:** [https://github.com/avnlp/rag-pipelines](https://github.com/avnlp/rag-pipelines)  
+**Documentation:** [https://deepwiki.com/avnlp/rag-pipelines](https://deepwiki.com/avnlp/rag-pipelines)  
+
+- Built advanced, domain-specific RAG pipelines for medical and financial question answering on one standardized **LangGraph** architecture split into offline indexing and online evaluation stages.
+- Composed the stack from LangGraph for async orchestration, **BAML** for typed structured generation, **Unstructured** for document processing, **Milvus** for dense + BM25 hybrid retrieval with Reciprocal Rank Fusion, **Contextual AI** instruction-following rerankers, and **DeepEval** with **Confident AI** for evaluation and tracing.
+- Engineered a three-layer metadata enrichment system: Structural (rule-based, zero-LLM - content hashes, counts, language, headings), Dynamic (user-defined fields extracted by an LLM per a YAML schema), and Fixed (RAG-optimized fields - candidate questions, summary, keywords, content type), with content-hash caching and three cost/quality modes.
+- Wired the query-time pipeline to parse each question into structured metadata and a vector-DB filter expression, run hybrid retrieval, rerank with domain-specific instructions, generate a chain-of-thought answer via a typed BAML function, and score with contextual recall, contextual precision, contextual relevancy, answer relevancy, and faithfulness.
+- Defined every LLM call as a typed BAML function with Schema-Aligned Parsing (recovers malformed JSON and missing fields, no tool-calling APIs required), per-domain prompt templates, and a Groq → Cerebras → SambaNova multi-provider fallback chain with exponential-backoff retries.
+- Targeted six datasets: **HealthBench**, **MedCaseReasoning**, **MetaMedQA**, and **PubMedQA** (medical), and **FinanceBench** and **Earnings Calls** (financial).
+
+## Advanced RAG Pipeline Optimization with DSPy
+
+**GitHub:** [https://github.com/avnlp/dspy-opt](https://github.com/avnlp/dspy-opt)  
+**Documentation:** [https://deepwiki.com/avnlp/dspy-opt](https://deepwiki.com/avnlp/dspy-opt)  
+
+- Optimized modular DSPy RAG pipelines by automatically tuning prompt instructions and few-shot demonstrations against DeepEval metrics, eliminating hand-crafted prompts.
+- Assembled each pipeline from composable modules - a `QueryRewriter` (synonym expansion and noise removal), a `SubQueryGenerator` (decomposition into parallel sub-queries), a `MetadataExtractor` (LLM-parsed JSON schema for filtering), a `WeaviateRetriever` (hybrid vector + keyword search), and a `dspy.ChainOfThought` answer generator - with Confident AI logging.
+- Integrated five optimizers, distinguished by what they tune and how: **MIPROv2** (joint instructions + demos via Bayesian optimization), **COPRO** (instruction-only coordinate ascent), **BootstrapFewShotWithRandomSearch** (demo-only random search), **SIMBA** (mini-batch self-reflective rule generation), and **GEPA** (reflection-driven genetic evolution over a Pareto frontier with candidate merging).
+- Drove optimization and evaluation with DeepEval's Answer Relevancy, Faithfulness, Contextual Precision, Contextual Recall, and Contextual Relevancy.
+- Evaluated across five datasets spanning complexity types - FreshQA/SealQA (single-hop, false-premise debunking), HotpotQA (multi-hop), PubMedQA (biomedical), TriviaQA (factoid), and Wikipedia with WikiQA pairs (general) - all configured through YAML for models, retrievers, and optimizer hyperparameters.
+
+## VectorDB
+
+**GitHub:** [https://github.com/avnlp/vectordb](https://github.com/avnlp/vectordb)  
+**Documentation:** [https://deepwiki.com/avnlp/vectordb](https://deepwiki.com/avnlp/vectordb)  
+
+- Built a unified, production-oriented toolkit for semantic search and RAG across five vector databases - **Pinecone**, **Weaviate**, **Milvus**, **Qdrant**, and **Chroma** - with feature parity between Haystack and LangChain and a single configuration-driven benchmarking surface.
+- Implemented three retrieval modes: dense search (any SentenceTransformers model), sparse search (SPLADE or native BM25 for exact terminology), and hybrid search fusing both via RRF or weighted scoring, with metadata filters and optional Groq/OpenAI answer generation.
+- Engineered advanced RAG patterns: cross-encoder and API reranking, MMR and diversity filtering, query enhancement (multi-query, HyDE, step-back), contextual compression, parent-document retrieval, JSON indexing, and an agentic RAG loop that searches, reflects, and refines.
+- Implemented namespaces and multi-tenancy per backend (Pinecone namespaces, Milvus partition keys, collection-based separation for Qdrant, Chroma, and Weaviate), alongside cost-optimized RAG using local sparse embeddings.
+- Benchmarked across TriviaQA, ARC, PopQA, FactScore, and Earnings Calls with dataset loaders and standardized Recall@k, Precision@k, MRR, NDCG@k, and hit-rate metrics for consistent comparison across backends.
 
 ## LLM Rankers
 
-**Github:** [https://github.com/avnlp/rankers](https://github.com/avnlp/rankers)  
+**GitHub:** [https://github.com/avnlp/rankers](https://github.com/avnlp/rankers)  
+**Documentation:** [https://deepwiki.com/avnlp/rankers](https://deepwiki.com/avnlp/rankers)  
 **Paper:** [LLM Rankers](https://github.com/avnlp/rankers/blob/main/paper/rankers.pdf)  
 
-- Implemented Pairwise, Setwise and Listwise ranking techniques. Released modular ranker components for the Haystack LLM framework. The implementation for all the rankers utilized Structured-Generation and Pydantic validation for robust Zero-Shot LLM ranking.
-- The Pairwise and Setwise rankers utilize efficient sorting methods (Heapsort and Bubblesort) to speed up inference.
-- The Listwise ranker integrates with the RankLLM framework and supports LLMs specifically trained for ranking (such as RankGPT, RankLlama, and RankZephyr).
-- Evaluated the performance of the ranking techniques on the FIQA, SciFact, NFCorpus, TREC-19, and TREC-20 datasets using the Mistral, Phi-3, and Llama-3 models.
-- All rankers performed closely across all datasets. RankLlama and RankZephyr (with the Listwise ranker) achieved slightly better results than the other rankers. Among the base models, the Llama-3 model with the Setwise and Pairwise ranker performed the best.
+- Implemented Pairwise, Setwise, and Listwise LLM ranking components for Haystack, using structured generation and Pydantic validation that keep zero-shot ranking well-formed even on smaller models.
+- Accelerated Pairwise and Setwise ranking with efficient sorting (Heapsort and Bubblesort) - all-pairs and heapsort for Pairwise, multi-document heapsort and bubblesort-style strategies for Setwise - building the core sorting on `ielab/llm-rankers`.
+- Integrated the **RankLLM** framework for Listwise ranking with sliding-window reranking and ranking-specialized models (RankGPT, RankLlama, RankVicuna, RankZephyr).
+- Released a custom Evaluator and `ir_datasets` dataloader reporting NDCG, MAP, Recall, and Precision at multiple cutoffs on FIQA, SciFact, NFCorpus, TREC-DL 2019, and TREC-DL 2020 with Mistral, Phi-3, and Llama-3 base models.
+- Found all rankers performed closely; RankZephyr and RankLlama (with the Listwise ranker) edged out the rest, while among general-purpose LLMs, Llama-3 with the Setwise and Pairwise rankers performed best.
+
+**Results (NDCG@10):**
+
+| Model | Ranker | FiQA | SciFact | NFCorpus | TREC-19 | TREC-20 |
+|---|---|---|---|---|---|---|
+| Instructor-XL (dense baseline) | — | 0.4650 | 0.6920 | 0.4180 | 0.5230 | 0.5040 |
+| Mistral | Setwise · Heapsort | 0.4680 | 0.6960 | 0.4310 | 0.7140 | 0.6950 |
+| Phi-3 | Setwise · Heapsort | 0.4710 | 0.7120 | 0.4390 | 0.7220 | 0.7030 |
+| Llama-3 | Setwise · Heapsort | 0.4760 | 0.7760 | 0.4430 | 0.7460 | 0.7270 |
+| RankLlama | Listwise | 0.4796 | 0.7812 | 0.4518 | 0.7511 | 0.7642 |
+| **RankZephyr** | **Listwise** | **0.4892** | **0.7891** | **0.4578** | **0.7693** | **0.7743** |
 
 ## Pairwise Ranking Prompting (PRP)
 
-**Github:** [https://github.com/avnlp/prp](https://github.com/avnlp/prp)
+**GitHub:** [https://github.com/avnlp/prp](https://github.com/avnlp/prp)  
+**Documentation:** [https://deepwiki.com/avnlp/prp](https://deepwiki.com/avnlp/prp)  
 
-- Implemented the Pairwise-Ranking-Prompting ranking technique from the paper with three sorting strategies: All-pair, Heapsort, Sliding Window.
-- 'PRP-allpair' enumerates all pairs and performs a global aggregation to generate a score for each document. It is highly insensitive to input ordering. It essentially ranks documents with win ratio.
-- 'PRP-heapsort' uses the pairwise preferences from the LLM as a comparator with HeapSort. It favors lower computation complexity than PRP-allpair while also being largely insensitive to input orders.
-- 'PRP-sliding_k' uses a sliding window that starts at the bottom of the initial ranking, compares pairs of documents, and swaps document pairs with a stride of 1. It has favorable time complexity but has high dependency on input order.
-- Evaluated the performance of the ranker on the FIQA, SciFact, NFCorpus, TREC-19, and TREC-20 datasets using the Mistral, Phi-3, and Llama-3 models.
-- The 'PRP-allpair' with the Llama-3 model performed the best across all datasets. 'PRP-sliding_k' and 'PRP-heapsort' perform similarly across all datasets.
+- Implemented Pairwise Ranking Prompting ([Qin et al., 2023](https://arxiv.org/abs/2306.17563)) as a standalone, zero-shot LLM reranking library that compares documents in pairs instead of scoring them individually, mitigating LLM position bias through bidirectional (A vs. B and B vs. A) comparisons.
+- Built three sorting strategies: `all_pair` (enumerate all pairs and aggregate by win ratio, O(N²) calls - order-insensitive), `heapsort` (LLM as comparator at O(N log N), largely order-insensitive), and `sliding_k` (bottom-up sliding window with stride 1 at O(K·N) - favorable complexity but order-dependent).
+- Engineered support for any OpenAI-compatible API (OpenAI, Groq, local models) with structured generation, Pydantic validation, and a Haystack-based evaluation toolkit over `ir_datasets` (BM25 retrieves top-100 candidates, then PRP reranks).
+- Evaluated on FIQA, SciFact, NFCorpus, TREC-DL 2019, and TREC-DL 2020 with NDCG, MAP, Recall, and Precision across Mistral, Phi-3, and Llama-3.
+- Found Llama-3 with `all_pair` strongest across every dataset on NDCG@10, with `heapsort` the recommended quality/efficiency tradeoff.
 
-## RRF
+**Results (NDCG@10):**
 
-**Github:** [https://github.com/avnlp/rrf](https://github.com/avnlp/rrf)  
-**Paper:** [Performance Evaluation of Rankers and RRF Techniques for Retrieval Pipelines](https://github.com/avnlp/rrf/blob/main/paper/rankers_rrf.pdf)
-
-- Evaluated performance of ranking models in conjunction with Reciprocal Rank Fusion for fusing results from Hybrid Retrieval pipelines.
-- Implemented Diversity Ranker that maximizes the overall diversity of the documents using embedding based similarity search. It uses a Sentence-Transformer model for embeddings.
-- Implemented Lost In The Middle Ranker that positions the most relevant documents at the beginning and at the end of the prompt while placing the least relevant documents in the middle to overcome the Lost-in-middle problem of LLMs.
-- Evaluated the performance of the rankers on the FIQA dataset using the `Instructor-XL` and `all-mpnet-base-v2` as the embedding models.
-- Evaluated different combinations of Dense Retrieval, Hybrid Retrieval in conjunction with usage of the Diversity, Lost In The Middle and Similarity Rankers.
-- The best performance was achieved with the Instructor-XL embedding model with Similarity Ranker, then a Diversity Ranker and Lost In The Middle Ranker.
-- We found that new instruction-tuned embedding models like Instructor-XL outperform many combinations of rankers due to their ability to utilize data specific instructions.
+| Model | Method | FiQA | SciFact | NFCorpus | TREC-19 | TREC-20 |
+|---|---|---|---|---|---|---|
+| Mistral | PRP-allpair | 0.4676 | 0.6860 | 0.4312 | 0.7186 | 0.6987 |
+| Phi-3 | PRP-allpair | 0.4714 | 0.7028 | 0.4386 | 0.7228 | 0.7167 |
+| Llama-3 | PRP-heapsort | 0.4764 | 0.7765 | 0.4423 | 0.7508 | 0.7637 |
+| Llama-3 | PRP-sliding_k | 0.4793 | 0.7852 | 0.4503 | 0.7511 | 0.7642 |
+| **Llama-3** | **PRP-allpair** | **0.4992** | **0.7912** | **0.4658** | **0.7623** | **0.7671** |
 
 ## LLM Blender
 
-**Github:** [https://github.com/avnlp/llm-blender](https://github.com/avnlp/llm-blender)  
-**Paper:** [LLM Ensembling: Haystack Pipelines with LLM-Blender](https://github.com/avnlp/llm-blender/blob/main/paper/llm_blender.pdf)
+**GitHub:** [https://github.com/avnlp/llm-blender](https://github.com/avnlp/llm-blender)  
+**Documentation:** [https://deepwiki.com/avnlp/llm-blender](https://deepwiki.com/avnlp/llm-blender)  
+**Paper:** [LLM Ensembling: Haystack Pipelines with LLM-Blender](https://github.com/avnlp/llm-blender/blob/main/paper/llm_blender.pdf)  
 
-- LLM-Blender is an ensembling framework designed to achieve consistently superior performance by combining the outputs of multiple language models (LLMs). This work focuses on integrating LLM-Blender with RAG pipelines to significantly improve the quality of generated text.
-- A custom Haystack component, LLMBlenderRanker, has been implemented to integrate LLM-Blender with Haystack pipelines. The component utilizes the PairRanker module from the LLM-Blender framework, which compares each candidate with the input in a pairwise manner.
-- Different LLMs can generate subtly different texts, since they are trained on different datasets and tasks. By comparing each text in a pairwise manner, the component ranks and ensembles the text so it is robust to these subtle differences.
-- Ranking techniques like MLM-scoring, SimCLS, and SummaReranker focus on individually scoring each candidate based on the input text, but do not compare candidates in a pairwise manner, which can lead to missing subtle differences between LLM outputs.
-- Pipelines ensembling various LLMs, such as Mistral-7B, Llama-3-8B and Phi-3-mini, using the LLM-Blender were evaluated. The MixInstruct benchmark dataset was curated by the LLM-Blender authors to benchmark ensemble models for LLMs on instruction-following tasks. The pipelines were evaluated using the BERTScore, BARTScore, and BLEURT metrics on the MixInstruct and BillSum Datasets.
-- The performance of the RAG pipelines with the LLM-Blender Ranker was evaluated on the BillSum and MixInstruct datasets using the Mistral, Phi-3, and Llama-3 models on the BERTScore, BARTScore and BLEURT metrics.
-- The newer models like Llama-3-8B, Phi-3-mini, and Mistral-7B significantly outperformed all the models used by the LLM Blender authors on all the three metrics: BERTScore, BARTScore and BLEURT on the MixInstruct dataset.
+- Integrated LLM-Blender with Haystack RAG pipelines to ensemble the outputs of multiple LLMs into a single, higher-quality answer.
+- Implemented LLM-Blender's two-stage design: a **PairRanker** ranks candidate generations through pairwise comparison (encoding input and candidates with a RoBERTa cross-attention encoder to build a pairwise-comparison matrix), then a **GenFuser** seq2seq-fuses the top-K candidates conditioned on the input.
+- Built a custom `LLMBlenderRanker` Haystack component wrapping PairRanker, comparing each candidate against the input pairwise so subtle wording differences between models don't skew the ensemble - unlike MLM-scoring, SimCLS, or SummaReranker, which score candidates individually.
+- Ensembled Mistral-7B, Llama-3-8B, Phi-3-mini, OpenChat-3.5, Starling-LM-7B-alpha, and OpenHermes-2.5, benchmarking on MixInstruct and BillSum with BERTScore, BARTScore, and BLEURT.
+- Found that PairRanker ensembles of these newer open models outperform their individual outputs and exceed the original LLM-Blender authors' reported baselines on MixInstruct across all three metrics.
 
-## Omega RAG
+**Results (MixInstruct, PairRanker ensemble of Llama-3-8B + Phi-3-mini + Mistral-7B):**
 
-Omega RAG provides a framework to combine several advanced RAG techniques into a high-performing RAG pipeline.
-Query Rewriting, Hyde, Adaptive retrieval (no retrieval, single-step, iterative retrieval), Correction by retrieval evaluation and confidence scoring, Unified active retrieval, Reranking, Citation generation, User feedback, Hybrid structured router, Scattered knowledge structurizer and Structured knowledge utilizer.  
+| Configuration | BERTScore ↑ | BARTScore ↑ | BLEURT ↑ |
+|---|---|---|---|
+| LLM-Blender authors (PairRanker) | 72.97 | −3.14 | −0.37 |
+| **This work (PairRanker)** | **75.83** | **−2.87** | **−0.26** |
 
-Under active development.
+## RRF: Performance Evaluation of Rankers and RRF Techniques for Retrieval Pipelines
 
-## Vector-DB
+**GitHub:** [https://github.com/avnlp/rrf](https://github.com/avnlp/rrf)  
+**Documentation:** [https://deepwiki.com/avnlp/rrf](https://deepwiki.com/avnlp/rrf)  
+**Paper:** [Performance Evaluation of Rankers and RRF Techniques for Retrieval Pipelines](https://github.com/avnlp/rrf/blob/main/paper/rankers_rrf.pdf)  
 
-**Github:** [https://github.com/avnlp/vectordb](https://github.com/avnlp/vectordb)
+- Evaluated rankers and Reciprocal Rank Fusion for LFQA/RAG pipelines, where context-window ordering and redundancy directly shape answer quality.
+- Implemented three rankers: a **Diversity Ranker** (maximizes document diversity via embedding similarity), a **Lost-in-the-Middle Ranker** (places the most relevant documents at the start and end of the prompt to counter the lost-in-the-middle effect), and a **Transformers Similarity Ranker** (cross-encoder query-document scoring).
+- Studied dense retrieval with INSTRUCTOR-XL and all-mpnet-base-v2 against hybrid retrieval that fuses BM25 sparse search with dense results via RRF, using bge-reranker-large (Similarity) and ms-marco-MiniLM-L-12-v2 (Diversity).
+- Benchmarked every retriever-and-ranker combination on the FIQA dataset using NDCG, MAP, Recall, and Precision.
+- Found the best results with INSTRUCTOR-XL and the Similarity Ranker, then Diversity, then Lost-in-the-Middle - and that instruction-tuned embeddings like INSTRUCTOR-XL outperform many ranker combinations by exploiting data-specific instructions.
 
-- Designed and implemented pipelines demonstrating the use of various vector databases for Semantic Search, Metadata Filtering, Hybrid Search, Reranking, and Retrieval-Augmented Generation (RAG). The pipelines were made using the Pinecone, Weaviate, Chroma, Milvus and Qdrant vector databases.
-- We compare and contrast the functionality of the vector database with different pipelines for each technique.
-- Vector database pipelines were created using Langchain and Haystack to highlight the Hybrid Search, Metadata Filtering and Reranker.
-- Pipelines were developed for datasets such as TriviaQA, ARC, PopQA, FactScore, Earnings Calls, and SEC Filings.
-- Hybrid Search Pipelines: Created pipelines combining sparse and dense indexes by upserting data into each index separately. Hybrid Search enables a unified query approach that merges semantic (dense) and keyword (sparse) search for improved relevance in results.
-- Metadata Filtering Pipelines: Developed pipelines leveraging metadata fields associated with vectors to filter search results during query time. Metadata enhances vectors with contextual information, enabling more meaningful and precise filtering.
-- Reranker Pipelines: Implemented pipelines to rerank semantic search results, ensuring the most relevant results are prioritized and returned.
+## Effect of Optimizer Selection and Hyperparameter Tuning on Training Efficiency and LLM Performance
 
-| Feature          | Milvus                                  | Weaviate                                  | Qdrant                                  | Pinecone                                  | Chromadb                                  |
-|------------------|-----------------------------------------|-------------------------------------------|-----------------------------------------|-------------------------------------------|-------------------------------------------|
-| **Indexes**      | Supports both sparse and dense vectors, using IVF for dense indexing and BM25 for sparse retrieval | Supports both sparse and dense vectors, using HNSW for dense and BM25 for sparse indexing | Supports both sparse and dense vectors, using HNSW for dense and hybrid search mechanisms for sparse | Supports only dense vectors, optimized for approximate nearest neighbor (ANN) search. Sparse vectors not supported | Supports only dense vectors with flat embeddings, optimized for in-memory search |
-| **Hybrid Search** | BM25 + vector search using hybrid query modes | BM25 + vector search with `alpha` parameter for balance | BM25 + ANN search with structured filtering | Single sparse-dense index. Requires both sparse and dense query vectors | Not supported |
-| **Partition**    | Uses partitions to separate data. Queries limited to a partition | Uses tenants for isolation. Queries limited to a tenant | Uses named collections for data separation. Queries filtered within collections | Uses namespaces to partition records. Queries limited to one namespace | Uses collections as namespaces. Queries directed to a collection |
-| **Semantic Search** | Uses IVF, HNSW, and ANNOY for efficient vector retrieval | Vector-based retrieval. Results based on embedding similarity | Real-time vector similarity search with contextual relevance | Finds similar content using vector proximity. Supports metadata filtering | Stores and retrieves vector embeddings for similarity search |
-| **Metadata Filtering** | SQL-like filtering with structured metadata fields | GraphQL-based filtering with hierarchical queries | Payload-based filtering with structured metadata | Dictionary-based metadata filtering attached to vectors | Key-value filtering using Pythonic expressions |
+**GitHub:** [https://github.com/avnlp/hyperparameter-tuning](https://github.com/avnlp/hyperparameter-tuning)  
+**Documentation:** [https://deepwiki.com/avnlp/hyperparameter-tuning](https://deepwiki.com/avnlp/hyperparameter-tuning)  
+**Paper:** [Effect of Optimizer Selection and Hyperparameter Tuning on Training Efficiency and LLM Performance](https://github.com/avnlp/hyperparameter-tuning/blob/main/paper/optimizer_inclusions.pdf)  
 
-## Hyperparameter-Tuning
-
-**Github:** [https://github.com/avnlp/hyperparameter-tuning](https://github.com/avnlp/hyperparameter-tuning)  
-**Paper:** [Optimizer Inclusions](https://github.com/avnlp/hyperparameter-tuning/blob/main/paper/optimizer_inclusions.pdf)
-
-- The choice of optimization algorithm for training Large Language Models (LLMs) significantly impacts both training speed and final predictive performance.
-- To illustrate the sensitivity of optimizer comparisons to hyperparameter tuning protocols, we conducted extensive hyperparameter tuning across three NLP tasks: Sentiment Analysis, Question Answering, and Text Summarization.
-- For Sentiment Analysis, we used Financial Phrasebank, StockTwits, and FinGPT-Sentiment datasets. Question Answering experiments were conducted on SQuAD, CoQA, and FIQA datasets, while Summarization tasks employed Multi-News and BillSum datasets.
-- We fine-tuned DistilBERT, BERT, and FinBERT models for Sentiment Analysis on the StockTwits and Financial PhraseBank dataset, while DistilBERT, BERT, RoBERTa were fine-tuned for Question Answering on the CoQA and SQuAD dataset. For Text Summarization, BART, DistillBART, and T5 models were fine-tuned on the BillSum and Multi-News dataset.
-- Using these fine-tuned models, we demonstrated the inclusion relationships for a range of optimizers, including Adam, RMSProp, Nesterov Accelerated Gradient (NAG), SGD with momentum, and vanilla SGD.
+- Demonstrated how optimizer choice and the hyperparameter-tuning protocol jointly determine training efficiency and final model quality, with optimizer rankings highly sensitive to how thoroughly each optimizer is tuned.
+- Mapped the optimizer inclusion relationships - `SGD ⊆ Momentum ⊆ RMSProp`, `SGD ⊆ Momentum ⊆ Adam`, and `SGD ⊆ Nesterov ⊆ Nadam` - across SGD, Momentum, NAG, RMSProp, and Adam/AdamW, tuning learning rate, momentum, smoothing constant, and the β1/β2 moment-estimate decay rates.
+- Conducted experiments across three NLP tasks: Sentiment Analysis (Financial PhraseBank, StockTwits, FinGPT-Sentiment), Question Answering (SQuAD, CoQA, FIQA), and Summarization (Multi-News, BillSum).
+- Fine-tuned DistilBERT, BERT, FinBERT, RoBERTa, Llama-3, and Phi-3 for classification and QA, and BART, DistilBART, and T5 for summarization.
+- Found that with sufficient tuning a more expressive optimizer never underperforms its special cases - RMSProp and AdamW never lost to SGD, Momentum, or Nesterov - confirming that inclusion relationships predict optimizer performance as tuning approaches optimality.

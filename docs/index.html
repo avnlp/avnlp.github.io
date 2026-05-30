@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AVNLP</title>
+<meta name="description" content="Open LLM &amp; NLP research: agentic RAG, GraphRAG, GRPO/RLHF alignment, LLM fine-tuning (LoRA/QLoRA/DPO), rerankers, DSPy optimization, and vector-database retrieval.">
+<link rel="canonical" href="https://avnlp.github.io/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#FAFAF8">
+<meta property="og:title" content="AVNLP">
+<meta property="og:description" content="Open LLM &amp; NLP research: agentic RAG, GraphRAG, GRPO/RLHF alignment, LLM fine-tuning (LoRA/QLoRA/DPO), rerankers, DSPy optimization, and vector-database retrieval.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://avnlp.github.io/">
+<meta property="og:site_name" content="AVNLP">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://avnlp.github.io/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AVNLP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AVNLP">
+<meta name="twitter:description" content="Open LLM &amp; NLP research: agentic RAG, GraphRAG, GRPO/RLHF alignment, LLM fine-tuning (LoRA/QLoRA/DPO), rerankers, DSPy optimization, and vector-database retrieval.">
+<meta name="twitter:image" content="https://avnlp.github.io/og-image.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23111'/%3E%3Ctext%20x='32'%20y='44'%20text-anchor='middle'%20font-family='Georgia,serif'%20font-size='28'%20font-weight='bold'%20fill='%23fff'%3EAV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+  /* IBM Plex Sans as a true variable font, so intermediate weights (450) work */
+  @font-face {
+    font-family: "IBM Plex Sans VF";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 700;
+    src: url("https://cdn.jsdelivr.net/fontsource/fonts/ibm-plex-sans:vf@latest/latin-wght-normal.woff2") format("woff2-variations");
+  }
+
+  :root {
+    --bg: #FAFAF8;
+    --bg-tint: #F0EFEB;
+    --ink: #111111;
+    --text: #1a1a1a;
+    --secondary: #444444;
+    --muted: #666666;
+    --accent: #1a4d8f;
+    --accent-hover: #0f3566;
+    --rule: #D8D6CE;
+    --rule-strong: #B8B5AB;
+    --tag-bg: #EDECEA;
+    --tag-border: #D0CEC6;
+
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans VF", "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --col: 1040px;
+    --rail: 244px;
+    --gap: 48px;
+    --shell: calc(var(--rail) + var(--gap) + var(--col));
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 450;
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--ink); color: #fff; }
+
+  a { color: var(--accent); transition: color .15s ease; }
+  a:hover { color: var(--accent-hover); }
+
+  .skip {
+    position: absolute; left: -9999px; top: 0; background: var(--ink); color: #fff;
+    padding: 10px 16px; z-index: 100; border-radius: 0 0 6px 0;
+    font-family: var(--mono); font-size: 13px; text-decoration: none;
+  }
+  .skip:focus { left: 0; }
+
+  /* ---------- hero ---------- */
+  header.hero {
+    text-align: center;
+    padding: clamp(64px, 14vw, 120px) clamp(20px, 5vw, 40px) 0;
+  }
+
+  h1.title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(3rem, 10vw, 5rem);
+    letter-spacing: .12em;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1;
+  }
+
+  .tagline {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+    line-height: 1.5;
+    color: var(--secondary);
+    margin: 18px auto 0;
+    max-width: 54ch;
+    text-wrap: balance;
+  }
+
+  .topics {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 14px auto 0;
+    max-width: 60ch;
+  }
+
+  /* ---------- nav links ---------- */
+  .hero-nav {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+  }
+  .hero-nav a {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--accent);
+    padding: 8px 20px;
+    border: 1.5px solid var(--accent);
+    border-radius: 6px;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .hero-nav a:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ---------- layout shell: TOC rail + content ---------- */
+  .shell {
+    max-width: var(--shell);
+    margin: clamp(40px, 6vw, 56px) auto 0;
+    padding: 0 clamp(20px, 5vw, 40px);
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--gap);
+    align-items: start;
+  }
+
+  main {
+    min-width: 0;
+    padding: 0 0 80px;
+  }
+
+  /* ---------- sticky TOC rail ---------- */
+  .toc-rail {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .toc-head {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 14px;
+    padding-left: 12px;
+  }
+
+  .toc-nav {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .toc-nav ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .toc-nav li { margin: 1px 0; }
+
+  .toc-nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--secondary);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .toc-nav a:hover {
+    background: var(--bg-tint);
+    color: var(--accent);
+  }
+  .toc-nav a.active {
+    background: color-mix(in srgb, var(--accent) 12%, #fff);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .toc-nav .n {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--muted);
+    min-width: 18px;
+    transition: color .15s ease;
+  }
+  .toc-nav a:hover .n,
+  .toc-nav a.active .n { color: var(--accent); }
+
+  /* mobile-only "Contents" bar (hidden on desktop) */
+  .toc-current { display: none; }
+
+  /* ---------- responsive: collapse rail into a sticky bar ---------- */
+  @media (max-width: 960px) {
+    .shell {
+      grid-template-columns: 1fr;
+      margin-top: 0;
+    }
+    .toc-rail {
+      top: 0;
+      max-height: none;
+      margin: 0 0 28px;
+      z-index: 40;
+    }
+    .toc-head { display: none; }
+
+    .toc-current {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--rule-strong);
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 12px;
+      box-shadow: 0 2px 10px rgba(17, 17, 17, .05);
+    }
+    .toc-current .lead {
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex: none;
+    }
+    .toc-current .cur {
+      flex: 1;
+      min-width: 0;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toc-current .chev {
+      flex: none;
+      color: var(--muted);
+      transition: transform .2s ease;
+    }
+    .toc-rail.open .toc-current .chev { transform: rotate(180deg); }
+
+    .toc-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 8px);
+      display: none;
+      max-height: 60vh;
+      padding: 8px;
+      background: var(--bg);
+      border: 1px solid var(--rule-strong);
+      border-radius: 10px;
+      box-shadow: 0 14px 40px rgba(17, 17, 17, .12);
+    }
+    .toc-rail.open .toc-nav { display: block; }
+    .toc-nav a { font-size: 15px; }
+  }
+
+  /* ---------- projects ---------- */
+  .project {
+    padding-top: clamp(40px, 6vw, 56px);
+    margin-top: clamp(40px, 6vw, 56px);
+    border-top: 2px solid var(--rule);
+    scroll-margin-top: 32px;
+  }
+  #work > .project:first-child {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 0;
+  }
+  @media (max-width: 960px) {
+    .project { scroll-margin-top: 76px; }
+  }
+
+  .proj-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .num {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .01em;
+    padding-top: .25em;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    line-height: 1.15;
+    letter-spacing: -.015em;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  /* ---------- resource links (repo, paper) ---------- */
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0 0;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 7px 14px 7px 12px;
+    border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--tag-border));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent) 10%, #fff);
+    transition: border-color .18s ease, color .18s ease, background .18s ease;
+  }
+  .links a:hover {
+    border-color: var(--accent);
+    color: var(--accent-hover);
+    background: color-mix(in srgb, var(--accent) 16%, #fff);
+  }
+  .links .ic { width: 15px; height: 15px; flex: none; }
+  /* ---------- paper chip: same tint as repo, distinguished by serif title ---------- */
+  .links a.paper .ptitle {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* ---------- status badge ---------- */
+  .status {
+    display: inline-block;
+    margin-top: 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #b45309;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 999px;
+    padding: 5px 14px;
+  }
+
+  /* ---------- body text ---------- */
+  .project p.lede {
+    margin: 18px 0 0;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  ul.points { margin: 20px 0 0; padding: 0; list-style: none; }
+  ul.points li {
+    position: relative;
+    padding-left: 22px;
+    margin: 0 0 14px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  ul.points li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: .72em;
+    width: 6px;
+    height: 6px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+
+  ul.points li strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  ul.points li code, .vtable code {
+    font-family: var(--mono);
+    font-size: .86em;
+    background: var(--bg-tint);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--ink);
+    border: 1px solid var(--tag-border);
+  }
+
+  ul.points a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: rgba(26, 77, 143, .3);
+    text-underline-offset: 2px;
+    word-break: break-word;
+    transition: text-decoration-color .18s ease;
+  }
+  ul.points a:hover { text-decoration-color: var(--accent); }
+  ul.points a.ref {
+    font-family: var(--mono);
+    font-size: .82em;
+  }
+
+  /* ---------- tags ---------- */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; }
+  .tags span {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .02em;
+    color: var(--secondary);
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .tags span:hover {
+    color: var(--ink);
+    border-color: var(--muted);
+    background: var(--bg-tint);
+  }
+
+  /* ---------- table ---------- */
+  .table-wrap {
+    margin: 24px 0 0;
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
+  table.vtable {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 760px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  table.vtable th, table.vtable td {
+    text-align: left;
+    vertical-align: top;
+    padding: 13px 15px;
+    border-bottom: 1px solid var(--rule);
+  }
+  table.vtable thead th {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--bg-tint);
+    white-space: nowrap;
+  }
+  table.vtable tbody th {
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    background: color-mix(in srgb, var(--bg-tint) 55%, transparent);
+  }
+  table.vtable td { color: var(--text); }
+  table.vtable tbody tr:last-child th,
+  table.vtable tbody tr:last-child td { border-bottom: 0; }
+
+  table.vtable tbody tr.best th,
+  table.vtable tbody tr.best td {
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  table.vtable td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .table-wrap.narrow table.vtable { min-width: 0; }
+
+  .result-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 28px 0 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 30px clamp(20px, 5vw, 40px) 60px;
+    border-top: 2px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: rgba(26, 77, 143, .3);
+    text-underline-offset: 3px;
+    transition: color .15s ease;
+  }
+  footer a:hover { color: var(--accent-hover); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ---------- back to top ---------- */
+  .to-top {
+    position: fixed;
+    right: clamp(16px, 4vw, 32px);
+    bottom: clamp(16px, 4vw, 32px);
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 19px;
+    line-height: 1;
+    box-shadow: 0 2px 12px rgba(17, 17, 17, .1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity .25s ease, transform .25s ease, background .2s ease, color .2s ease;
+    z-index: 50;
+  }
+  .to-top.show { opacity: 1; visibility: visible; transform: none; }
+  .to-top:hover { background: var(--accent); color: #fff; }
+
+  /* ---------- motion ---------- */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero h1.title { animation: rise .6s ease both; }
+    .hero .tagline { animation: rise .65s .08s ease both; }
+    .hero .topics { animation: rise .65s .12s ease both; }
+    .hero-nav { animation: rise .65s .18s ease both; }
+    .project {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .project.in { opacity: 1; transform: none; }
+  }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://avnlp.github.io/#org",
+      "name": "AVNLP",
+      "url": "https://avnlp.github.io/",
+      "logo": { "@type": "ImageObject", "url": "https://avnlp.github.io/logo.png", "width": 200, "height": 200 },
+      "sameAs": ["https://github.com/avnlp", "https://huggingface.co/avnlp"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://avnlp.github.io/#website",
+      "url": "https://avnlp.github.io/",
+      "name": "AVNLP",
+      "publisher": { "@id": "https://avnlp.github.io/#org" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://avnlp.github.io/#webpage",
+      "url": "https://avnlp.github.io/",
+      "name": "AVNLP",
+      "isPartOf": { "@id": "https://avnlp.github.io/#website" },
+      "about": { "@id": "https://avnlp.github.io/#org" },
+      "primaryImageOfPage": { "@type": "ImageObject", "url": "https://avnlp.github.io/og-image.png", "width": 1200, "height": 630 },
+      "mainEntity": { "@id": "https://avnlp.github.io/#projects" }
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://avnlp.github.io/#projects",
+      "name": "AVNLP Projects",
+      "numberOfItems": 13,
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"item":{"@type":"SoftwareSourceCode","name":"Agentic Graph RAG for Medical Diagnosis","url":"https://avnlp.github.io/#agentic-med-diag","codeRepository":"https://github.com/avnlp/agentic-med-diag","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/agentic-med-diag"]}},
+        {"@type":"ListItem","position":2,"item":{"@type":"SoftwareSourceCode","name":"BioThink","url":"https://avnlp.github.io/#biothink","codeRepository":"https://github.com/avnlp/biothink","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/biothink","https://huggingface.co/avnlp/BioThink-Qwen3-1.7B","https://huggingface.co/datasets/avnlp/self_biorag_processed"]}},
+        {"@type":"ListItem","position":3,"item":{"@type":"SoftwareSourceCode","name":"RAG Model Training","url":"https://avnlp.github.io/#rag-model-training","codeRepository":"https://github.com/avnlp/rag-model-training","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/rag-model-training"]}},
+        {"@type":"ListItem","position":4,"item":{"@type":"SoftwareSourceCode","name":"GRPO","url":"https://avnlp.github.io/#grpo","codeRepository":"https://github.com/avnlp/grpo","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/grpo"]}},
+        {"@type":"ListItem","position":5,"item":{"@type":"SoftwareSourceCode","name":"LLM Fine-tuning","url":"https://avnlp.github.io/#llm-finetuning","codeRepository":"https://github.com/avnlp/llm-finetuning","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/llm-finetuning"]}},
+        {"@type":"ListItem","position":6,"item":{"@type":"SoftwareSourceCode","name":"RAG Pipelines","url":"https://avnlp.github.io/#rag-pipelines","codeRepository":"https://github.com/avnlp/rag-pipelines","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/rag-pipelines"]}},
+        {"@type":"ListItem","position":7,"item":{"@type":"SoftwareSourceCode","name":"Advanced RAG Pipeline Optimization with DSPy","url":"https://avnlp.github.io/#dspy-opt","codeRepository":"https://github.com/avnlp/dspy-opt","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/dspy-opt"]}},
+        {"@type":"ListItem","position":8,"item":{"@type":"SoftwareSourceCode","name":"VectorDB","url":"https://avnlp.github.io/#vectordb","codeRepository":"https://github.com/avnlp/vectordb","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/vectordb"]}},
+        {"@type":"ListItem","position":9,"item":{"@type":"SoftwareSourceCode","name":"LLM Rankers","url":"https://avnlp.github.io/#rankers","codeRepository":"https://github.com/avnlp/rankers","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/rankers","https://github.com/avnlp/rankers/blob/main/paper/rankers.pdf"]}},
+        {"@type":"ListItem","position":10,"item":{"@type":"SoftwareSourceCode","name":"Pairwise Ranking Prompting (PRP)","url":"https://avnlp.github.io/#prp","codeRepository":"https://github.com/avnlp/prp","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/prp"]}},
+        {"@type":"ListItem","position":11,"item":{"@type":"SoftwareSourceCode","name":"LLM Blender","url":"https://avnlp.github.io/#llm-blender","codeRepository":"https://github.com/avnlp/llm-blender","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/llm-blender","https://github.com/avnlp/llm-blender/blob/main/paper/llm_blender.pdf"]}},
+        {"@type":"ListItem","position":12,"item":{"@type":"SoftwareSourceCode","name":"RRF","url":"https://avnlp.github.io/#rrf","codeRepository":"https://github.com/avnlp/rrf","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/rrf","https://github.com/avnlp/rrf/blob/main/paper/rankers_rrf.pdf"]}},
+        {"@type":"ListItem","position":13,"item":{"@type":"SoftwareSourceCode","name":"Effect of Optimizer Selection and Hyperparameter Tuning","url":"https://avnlp.github.io/#hyperparameter-tuning","codeRepository":"https://github.com/avnlp/hyperparameter-tuning","author":{"@id":"https://avnlp.github.io/#org"},"sameAs":["https://deepwiki.com/avnlp/hyperparameter-tuning","https://github.com/avnlp/hyperparameter-tuning/blob/main/paper/optimizer_inclusions.pdf"]}}
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<noscript><style>.project{opacity:1!important;transform:none!important}</style></noscript>
+<a class="skip" href="#work">Skip to projects</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="ic-repo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+  </symbol>
+  <symbol id="ic-paper" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <line x1="16" y1="13" x2="8" y2="13"/>
+    <line x1="16" y1="17" x2="8" y2="17"/>
+  </symbol>
+  <symbol id="ic-model" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+    <line x1="12" y1="22.08" x2="12" y2="12"/>
+  </symbol>
+  <symbol id="ic-data" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+  </symbol>
+  <symbol id="ic-docs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+  </symbol>
+</svg>
+
+<header class="hero">
+  <h1 class="title">AVNLP</h1>
+  <p class="topics">Retrieval &amp; Ranking &middot; RAG &middot; Agents &middot; LLM Training &amp; RL Alignment &middot; Domain-Specific AI</p>
+  <nav class="hero-nav" aria-label="Primary">
+    <a href="#work">Projects</a>
+    <a href="https://github.com/avnlp">GitHub</a>
+  </nav>
+</header>
+
+<div class="shell">
+  <aside class="toc-rail" id="toc">
+    <button class="toc-current" type="button" aria-expanded="false" aria-controls="toc-nav">
+      <span class="lead">Contents</span>
+      <span class="cur">Agentic Graph RAG</span>
+      <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <p class="toc-head">Contents</p>
+    <nav class="toc-nav" id="toc-nav" aria-label="Project index">
+      <ol>
+        <li><a href="#agentic-med-diag"><span class="n">01</span><span class="lbl">Agentic Graph RAG</span></a></li>
+        <li><a href="#biothink"><span class="n">02</span><span class="lbl">BioThink</span></a></li>
+        <li><a href="#rag-model-training"><span class="n">03</span><span class="lbl">RAG Model Training</span></a></li>
+        <li><a href="#grpo"><span class="n">04</span><span class="lbl">GRPO</span></a></li>
+        <li><a href="#llm-finetuning"><span class="n">05</span><span class="lbl">LLM Fine-tuning</span></a></li>
+        <li><a href="#rag-pipelines"><span class="n">06</span><span class="lbl">RAG Pipelines</span></a></li>
+        <li><a href="#dspy-opt"><span class="n">07</span><span class="lbl">DSPy Optimization</span></a></li>
+        <li><a href="#vectordb"><span class="n">08</span><span class="lbl">VectorDB</span></a></li>
+        <li><a href="#rankers"><span class="n">09</span><span class="lbl">LLM Rankers</span></a></li>
+        <li><a href="#prp"><span class="n">10</span><span class="lbl">PRP</span></a></li>
+        <li><a href="#llm-blender"><span class="n">11</span><span class="lbl">LLM Blender</span></a></li>
+        <li><a href="#rrf"><span class="n">12</span><span class="lbl">RRF</span></a></li>
+        <li><a href="#hyperparameter-tuning"><span class="n">13</span><span class="lbl">Hyperparameter Tuning</span></a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main id="top">
+  <div id="work">
+
+  <section class="project" id="agentic-med-diag">
+    <div class="proj-head"><span class="num">1.</span><h2>Agentic Graph RAG for Medical Diagnosis</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/agentic-med-diag"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/agentic-med-diag</a>
+      <a href="https://deepwiki.com/avnlp/agentic-med-diag"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Graph RAG</span><span>Agentic RAG</span><span>Neo4j</span><span>Milvus</span><span>LangGraph</span><span>LightRAG</span><span>Medical QA</span><span>Multi-hop</span></div>
+    <ul class="points">
+      <li>Designed an agentic, multi-hop Graph RAG system for medical question answering that reasons across a medical knowledge graph to resolve complex clinical questions.</li>
+      <li>Architected the system as a hierarchical LangGraph state machine: a parent graph fans out to two parallel subgraphs - a semantic channel and a relational channel, each with conditional loop edges - then synthesizes their outputs into a final answer.</li>
+      <li>Decomposed each question into semantic sub-queries (with <code>#N</code> back-references) and relational SPO triple queries (with <code>Entity#N</code> placeholders), driving two iterative retrieve-and-reason loops: the semantic channel chains sub-query grounding &rarr; GraphRAG retrieval &rarr; semantic filter &rarr; summary &rarr; sub-answer &rarr; logic drafting &rarr; evidence verification &rarr; conditional expansion, while the relational channel runs SPO triple queries &rarr; KG filter &rarr; triplet summaries &rarr; sub-answer.</li>
+      <li>Backed the two channels with Neo4j for the entity/relationship knowledge graph and Milvus for dense semantic retrieval over document chunks.</li>
+      <li>Integrated four runtime-switchable Graph RAG backends, each with a custom <code>context_filter</code> that splits retrieved context across the channels: LightRAG (dual-level local/global KG in hybrid mode), MiniRAG (lightweight, Neo4j-free "light" mode), PathRAG (two-tier hierarchy returning reasoning paths between entities), and HyperGraphRAG (hyperedges linking multiple entities to capture group clinical relationships).</li>
+      <li>Defined an evaluation protocol benchmarking all four pipelines against their stock backends on HealthBench, MedCaseReasoning, MetaMedQA, and PubMedQA with DeepEval's Contextual Recall, Contextual Precision, Contextual Relevancy, Answer Relevancy, and Faithfulness.</li>
+    </ul>
+    <span class="status">Code coming soon</span>
+  </section>
+
+  <section class="project" id="biothink">
+    <div class="proj-head"><span class="num">2.</span><h2>BioThink</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/biothink"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/biothink</a>
+      <a href="https://deepwiki.com/avnlp/biothink"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+      <a href="https://huggingface.co/avnlp/BioThink-Qwen3-1.7B"><svg class="ic"><use href="#ic-model"/></svg>BioThink-Qwen3-1.7B</a>
+      <a href="https://huggingface.co/datasets/avnlp/self_biorag_processed"><svg class="ic"><use href="#ic-data"/></svg>self_biorag_processed</a>
+    </div>
+    <div class="tags"><span>Self-Reflection</span><span>Self-RAG</span><span>GRPO</span><span>QLoRA</span><span>Unsloth</span><span>Qwen3-1.7B</span><span>Biomedical QA</span><span>DeepEval</span></div>
+    <ul class="points">
+      <li>Developed BioThink, a self-reflective biomedical question-answering framework inspired by Self-RAG and built on Self-BioRAG, that fine-tunes Qwen3-1.7B to interleave reasoning, answering, and self-critique in a single structured generation.</li>
+      <li>Trained the model to emit a fixed XML schema: step-by-step reasoning in <code>&lt;think&gt;</code>, a concise <code>&lt;answer&gt;</code>, and three self-reflection signals - <code>&lt;contextual-relevance&gt;</code> (<code>[Relevant]</code>/<code>[Irrelevant]</code>), <code>&lt;answer-utility&gt;</code> (<code>[Utility:1]</code>–<code>[Utility:5]</code>), and <code>&lt;groundness&gt;</code> (<code>[Fully supported]</code>/<code>[Partially supported]</code>/<code>[No support/Contradictory]</code>).</li>
+      <li>Aligned the model with GRPO (using QLoRA and Unsloth for efficient fine-tuning) under six reward functions: a Correctness reward (DeepEval's GEval with a custom biomedical LLM-as-a-Judge), Utility/Relevance/Groundness token rewards, an XML Structure reward (tag presence and open/close), and a Structure Order reward enforcing correct tag order with no stray text.</li>
+      <li>Processed the Self-BioRAG dataset into question, answer, and context fields plus groundness, relevance, and utility labels, releasing it as <code>avnlp/self_biorag_processed</code> and publishing the trained model as <code>avnlp/BioThink-Qwen3-1.7B</code>.</li>
+      <li>Systematically assessed generations across seven metrics: XML structure integrity, correct Utility/Relevance/Groundness tokens, Answer Correctness (custom GEval), Faithfulness, and Answer Relevancy via DeepEval's LLM-as-a-Judge metrics.</li>
+    </ul>
+  </section>
+
+  <section class="project" id="rag-model-training">
+    <div class="proj-head"><span class="num">3.</span><h2>RAG Model Training</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/rag-model-training"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/rag-model-training</a>
+      <a href="https://deepwiki.com/avnlp/rag-model-training"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Adaptive RAG</span><span>Corrective RAG</span><span>RQ-RAG</span><span>Self-RAG</span><span>Agentic RAG</span><span>ReZero</span><span>GRPO</span><span>SFT</span></div>
+    <ul class="points">
+      <li>Reproduced the original training methodologies behind six advanced RAG techniques, each targeting a different component of the pipeline - retrieval-strategy selection, retrieval-quality evaluation, query refinement, self-reflection, or autonomous agentic search.</li>
+      <li><strong>Adaptive-RAG (SFT):</strong> trained a T5-large query-complexity classifier that routes each query to no-retrieval, single-step, or multi-step retrieval (Simple/Moderate/Complex), on data drawn from Musique and other multi-hop QA datasets.</li>
+      <li><strong>Corrective RAG (SFT):</strong> trained a T5-large retrieval evaluator that grades retrieved documents as Correct/Ambiguous/Incorrect with a −1 to 1 relevance score, powering the decompose-then-recompose correction strategy, on the CRAG dataset.</li>
+      <li><strong>RQ-RAG (SFT):</strong> fine-tuned Llama-3.2-3B with an expanded vocabulary to refine queries through <code>[S_Rewritten_Query]</code>, <code>[S_Decomposed_Query]</code>, and <code>[S_Disambiguated_Query]</code> control tokens under a tree-based generate → retrieve → refine decoding strategy.</li>
+      <li><strong>Self-RAG (two-phase SFT):</strong> trained a T5-base critic and generator in sequence to emit <code>[Retrieval]</code>, <code>[Relevant]</code>, <code>[Grounded]</code>, and <code>[Utility:1–5]</code> reflection tokens, applied to the financial Earnings Calls domain.</li>
+      <li><strong>Agentic RAG (GRPO):</strong> fine-tuned Llama-3.1-8B with LoRA on TriviaQA + FAISS retrieval (vLLM-served, up to 6 search-refinement cycles) using Correctness (LLM-as-a-Judge) and Formatting rewards for autonomous missing-information detection, query rewriting, and tool-call generation.</li>
+      <li><strong>ReZero (GRPO):</strong> fine-tuned Llama-3.2-8B with rank-64 LoRA on TriviaQA + multilingual-e5-large + FAISS (up to 32 cycles), rewarding search persistence through six composite signals - Correctness, Formatting, Retry, EM-Chunk, Search Strategy, and Search Diversity - over <code>think</code>/<code>search</code>/<code>answer</code> tags.</li>
+    </ul>
+  </section>
+
+  <section class="project" id="grpo">
+    <div class="proj-head"><span class="num">4.</span><h2>GRPO</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/grpo"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/grpo</a>
+      <a href="https://deepwiki.com/avnlp/grpo"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>GRPO</span><span>RLHF</span><span>Reward Design</span><span>DeepSpeed</span><span>vLLM</span><span>PyTorch</span><span>Qwen2.5</span><span>GSM8K</span></div>
+    <ul class="points">
+      <li>Aggregated and refactored four open-source GRPO implementations under a shared structure, isolating how each makes different systems choices around the same core algorithm.</li>
+      <li>GRPO replaces the learned value function with the group-average reward of sampled responses as the baseline, normalizes rewards within each group into per-output advantages, and regularizes with a KL term in the loss - eliminating the memory and compute overhead of PPO-style critics.</li>
+      <li>Unified four implementations under one codebase: <strong>nanoAhaMoment</strong> (vLLM with sleep/wake GPU sharing, DeepSpeed ZeRO-2, REINFORCE+KL), <strong>GRPO:Zero</strong> (custom Transformer/KV-cache loop on Qwen2.5-3B-Instruct, pure REINFORCE, no reference model), <strong>Simple GRPO</strong> (DeepSpeed, reference log-probs offloaded to a separate Bottle HTTP server, PPO-clip+KL), and <strong>GRPO from Scratch</strong> from Andriy Burkov's LM Book (pure PyTorch, <code>copy.deepcopy</code> reference per outer iteration, &mu; updates per batch).</li>
+      <li>Dissected the sharpest divergence - the generation backend: vLLM with PagedAttention and sleep mode, a hand-written autoregressive KV-cache loop, and HuggingFace <code>model.generate()</code> with captured generation log-probs for exact-policy ratio clipping.</li>
+      <li>Contrasted reference-policy handling across the four: a CPU-offloaded DeepSpeed copy, no reference at all, a frozen out-of-process server, and a per-iteration <code>copy.deepcopy</code> that lags by one iteration.</li>
+      <li>Spanned the Countdown and GSM8K tasks across Qwen2.5 (0.5B–7B) models with combined correctness + format rewards over <code>&lt;think&gt;/&lt;answer&gt;</code> (or <code>&lt;reasoning&gt;/&lt;answer&gt;</code>) tags, documenting each variant's group size, KL coefficient, clip ε, reward range, and optimizer/learning rate.</li>
+    </ul>
+  </section>
+
+  <section class="project" id="llm-finetuning">
+    <div class="proj-head"><span class="num">5.</span><h2>LLM Fine-tuning</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/llm-finetuning"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/llm-finetuning</a>
+      <a href="https://deepwiki.com/avnlp/llm-finetuning"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>QLoRA</span><span>LoRA</span><span>DoRA</span><span>GRPO</span><span>DPO</span><span>ORPO</span><span>KTO</span><span>PPO</span><span>Unsloth</span></div>
+    <ul class="points">
+      <li>Built 39 fine-tuning pipelines across 16 datasets spanning three paradigms - adapter-based SFT, GRPO reinforcement learning, and preference alignment - on TRL, PEFT, and Unsloth with composable reward functions and LLM-as-a-Judge evaluation.</li>
+      <li><strong>Adapter SFT (25 pipelines):</strong> fine-tuned Llama-3.2-3B with five parameter-efficient methods - LoRA and QLoRA (rank 8, alpha 32), DoRA (weight-decomposed), P-Tuning, and Prefix-Tuning - on ARC, TriviaQA, FactScore, PopQA, and Earnings Calls, comparing the adapter techniques head-to-head.</li>
+      <li><strong>Math reasoning (GRPO):</strong> trained Phi-4, Mistral-7B, Llama-3.2-3B, Llama-3.1-8B, and Gemma3-1B on GSM8K with one correctness reward (numeric extraction from <code>&lt;answer&gt;</code>) and four format rewards (reasoning-tag nesting, ≥3 numbered steps, multi-line depth, block presence); a two-stage Qwen-3 Base pipeline first ran SFT on OpenR1-Math-220k to prime the format, then GRPO on GSM8K.</li>
+      <li><strong>Multi-hop and medical QA (GRPO):</strong> fine-tuned Llama-3.2-3B with eight reward functions - four correctness (DeepEval GEval-for-RAG, Summarization, Answer Relevancy, Evidently AI CorrectnessLLMEval) and four format - on HotpotQA, FreshQA, and MuSiQue, then reused the same architecture for biomedical reasoning on MedQA, BioASQ, and PubMedQA.</li>
+      <li><strong>Preference alignment:</strong> aligned models over QLoRA with four algorithms - DPO (Zephyr-7B/UltraFeedback, Llama-3-8B/WebGPT), ORPO (Llama-3-8B/UltraFeedback), KTO (Qwen2.5-1.5B/KTO-Mix-14k), and PPO (Llama-3-8B on UltraFeedback and WebGPT, scored by an OpenAssistant DeBERTa-v3 reward model).</li>
+    </ul>
+  </section>
+
+  <section class="project" id="rag-pipelines">
+    <div class="proj-head"><span class="num">6.</span><h2>RAG Pipelines</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/rag-pipelines"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/rag-pipelines</a>
+      <a href="https://deepwiki.com/avnlp/rag-pipelines"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>RAG</span><span>LangGraph</span><span>BAML</span><span>Milvus</span><span>Hybrid Search</span><span>Contextual AI</span><span>DeepEval</span><span>Confident AI</span></div>
+    <ul class="points">
+      <li>Built advanced, domain-specific RAG pipelines for medical and financial question answering on one standardized LangGraph architecture split into offline indexing and online evaluation stages.</li>
+      <li>Composed the stack from LangGraph for async orchestration, BAML for typed structured generation, Unstructured for document processing, Milvus for dense + BM25 hybrid retrieval with Reciprocal Rank Fusion, Contextual AI instruction-following rerankers, and DeepEval with Confident AI for evaluation and tracing.</li>
+      <li>Engineered a three-layer metadata enrichment system: Structural (rule-based, zero-LLM - content hashes, counts, language, headings), Dynamic (user-defined fields extracted by an LLM per a YAML schema), and Fixed (RAG-optimized fields - candidate questions, summary, keywords, content type), with content-hash caching and three cost/quality modes.</li>
+      <li>Wired the query-time pipeline to parse each question into structured metadata and a vector-DB filter expression, run hybrid retrieval, rerank with domain-specific instructions, generate a chain-of-thought answer via a typed BAML function, and score with contextual recall, contextual precision, contextual relevancy, answer relevancy, and faithfulness.</li>
+      <li>Defined every LLM call as a typed BAML function with Schema-Aligned Parsing (recovers malformed JSON and missing fields, no tool-calling APIs required), per-domain prompt templates, and a Groq → Cerebras → SambaNova multi-provider fallback chain with exponential-backoff retries.</li>
+      <li>Targeted six datasets: HealthBench, MedCaseReasoning, MetaMedQA, and PubMedQA (medical), and FinanceBench and Earnings Calls (financial).</li>
+    </ul>
+  </section>
+
+  <section class="project" id="dspy-opt">
+    <div class="proj-head"><span class="num">7.</span><h2>Advanced RAG Pipeline Optimization with DSPy</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/dspy-opt"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/dspy-opt</a>
+      <a href="https://deepwiki.com/avnlp/dspy-opt"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>DSPy</span><span>RAG</span><span>Weaviate</span><span>MIPROv2</span><span>GEPA</span><span>SIMBA</span><span>COPRO</span><span>DeepEval</span></div>
+    <ul class="points">
+      <li>Optimized modular DSPy RAG pipelines by automatically tuning prompt instructions and few-shot demonstrations against DeepEval metrics, eliminating hand-crafted prompts.</li>
+      <li>Assembled each pipeline from composable modules - a <code>QueryRewriter</code> (synonym expansion and noise removal), a <code>SubQueryGenerator</code> (decomposition into parallel sub-queries), a <code>MetadataExtractor</code> (LLM-parsed JSON schema for filtering), a <code>WeaviateRetriever</code> (hybrid vector + keyword search), and a <code>dspy.ChainOfThought</code> answer generator - with Confident AI logging.</li>
+      <li>Integrated five optimizers, distinguished by what they tune and how: <strong>MIPROv2</strong> (joint instructions + demos via Bayesian optimization), <strong>COPRO</strong> (instruction-only coordinate ascent), <strong>BootstrapFewShotWithRandomSearch</strong> (demo-only random search), <strong>SIMBA</strong> (mini-batch self-reflective rule generation), and <strong>GEPA</strong> (reflection-driven genetic evolution over a Pareto frontier with candidate merging).</li>
+      <li>Drove optimization and evaluation with DeepEval's Answer Relevancy, Faithfulness, Contextual Precision, Contextual Recall, and Contextual Relevancy.</li>
+      <li>Evaluated across five datasets spanning complexity types - FreshQA/SealQA (single-hop, false-premise debunking), HotpotQA (multi-hop), PubMedQA (biomedical), TriviaQA (factoid), and Wikipedia with WikiQA pairs (general) - all configured through YAML for models, retrievers, and optimizer hyperparameters.</li>
+    </ul>
+  </section>
+
+  <section class="project" id="vectordb">
+    <div class="proj-head"><span class="num">8.</span><h2>VectorDB</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/vectordb"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/vectordb</a>
+      <a href="https://deepwiki.com/avnlp/vectordb"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Pinecone</span><span>Weaviate</span><span>Qdrant</span><span>Milvus</span><span>Chroma</span><span>Hybrid Search</span><span>Haystack</span><span>LangChain</span></div>
+    <ul class="points">
+      <li>Built a unified, production-oriented toolkit for semantic search and RAG across five vector databases - Pinecone, Weaviate, Milvus, Qdrant, and Chroma - with feature parity between Haystack and LangChain and a single configuration-driven benchmarking surface.</li>
+      <li>Implemented three retrieval modes: dense search (any SentenceTransformers model), sparse search (SPLADE or native BM25 for exact terminology), and hybrid search fusing both via RRF or weighted scoring, with metadata filters and optional Groq/OpenAI answer generation.</li>
+      <li>Engineered advanced RAG patterns: cross-encoder and API reranking, MMR and diversity filtering, query enhancement (multi-query, HyDE, step-back), contextual compression, parent-document retrieval, JSON indexing, and an agentic RAG loop that searches, reflects, and refines.</li>
+      <li>Implemented namespaces and multi-tenancy per backend (Pinecone namespaces, Milvus partition keys, collection-based separation for Qdrant, Chroma, and Weaviate), alongside cost-optimized RAG using local sparse embeddings.</li>
+      <li>Benchmarked across TriviaQA, ARC, PopQA, FactScore, and Earnings Calls with dataset loaders and standardized Recall@k, Precision@k, MRR, NDCG@k, and hit-rate metrics for consistent comparison across backends.</li>
+    </ul>
+  </section>
+
+  <section class="project" id="rankers">
+    <div class="proj-head"><span class="num">9.</span><h2>LLM Rankers</h2></div>
+    <div class="links">
+      <a class="paper" href="https://github.com/avnlp/rankers/blob/main/paper/rankers.pdf"><svg class="ic"><use href="#ic-paper"/></svg><span class="ptitle">LLM Rankers</span></a>
+      <a href="https://github.com/avnlp/rankers"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/rankers</a>
+      <a href="https://deepwiki.com/avnlp/rankers"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Ranking</span><span>Pairwise</span><span>Setwise</span><span>Listwise</span><span>RankLLM</span><span>RankZephyr</span><span>Haystack</span><span>BEIR</span></div>
+    <ul class="points">
+      <li>Implemented Pairwise, Setwise, and Listwise LLM ranking components for Haystack, using structured generation and Pydantic validation that keep zero-shot ranking well-formed even on smaller models.</li>
+      <li>Accelerated Pairwise and Setwise ranking with efficient sorting (Heapsort and Bubblesort) - all-pairs and heapsort for Pairwise, multi-document heapsort and bubblesort-style strategies for Setwise - building the core sorting on <code>ielab/llm-rankers</code>.</li>
+      <li>Integrated the RankLLM framework for Listwise ranking with sliding-window reranking and ranking-specialized models (RankGPT, RankLlama, RankVicuna, RankZephyr).</li>
+      <li>Released a custom Evaluator and <code>ir_datasets</code> dataloader reporting NDCG, MAP, Recall, and Precision at multiple cutoffs on FIQA, SciFact, NFCorpus, TREC-DL 2019, and TREC-DL 2020 with Mistral, Phi-3, and Llama-3 base models.</li>
+      <li>Found all rankers performed closely; RankZephyr and RankLlama (with the Listwise ranker) edged out the rest, while among general-purpose LLMs, Llama-3 with the Setwise and Pairwise rankers performed best.</li>
+    </ul>
+    <p class="result-label">Results · NDCG@10</p>
+    <div class="table-wrap">
+      <table class="vtable">
+        <thead>
+          <tr><th>Model</th><th>Ranker</th><th>FiQA</th><th>SciFact</th><th>NFCorpus</th><th>TREC-19</th><th>TREC-20</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Instructor-XL</th><td>Dense baseline</td><td class="num">0.4650</td><td class="num">0.6920</td><td class="num">0.4180</td><td class="num">0.5230</td><td class="num">0.5040</td></tr>
+          <tr><th>Mistral</th><td>Setwise · Heapsort</td><td class="num">0.4680</td><td class="num">0.6960</td><td class="num">0.4310</td><td class="num">0.7140</td><td class="num">0.6950</td></tr>
+          <tr><th>Phi-3</th><td>Setwise · Heapsort</td><td class="num">0.4710</td><td class="num">0.7120</td><td class="num">0.4390</td><td class="num">0.7220</td><td class="num">0.7030</td></tr>
+          <tr><th>Llama-3</th><td>Setwise · Heapsort</td><td class="num">0.4760</td><td class="num">0.7760</td><td class="num">0.4430</td><td class="num">0.7460</td><td class="num">0.7270</td></tr>
+          <tr><th>RankLlama</th><td>Listwise</td><td class="num">0.4796</td><td class="num">0.7812</td><td class="num">0.4518</td><td class="num">0.7511</td><td class="num">0.7642</td></tr>
+          <tr class="best"><th>RankZephyr</th><td>Listwise</td><td class="num">0.4892</td><td class="num">0.7891</td><td class="num">0.4578</td><td class="num">0.7693</td><td class="num">0.7743</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="project" id="prp">
+    <div class="proj-head"><span class="num">10.</span><h2>Pairwise Ranking Prompting (PRP)</h2></div>
+    <div class="links">
+      <a href="https://github.com/avnlp/prp"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/prp</a>
+      <a href="https://deepwiki.com/avnlp/prp"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Pairwise Ranking</span><span>Zero-Shot</span><span>All-pair</span><span>Heapsort</span><span>Sliding Window</span><span>BEIR</span><span>FIQA</span></div>
+    <ul class="points">
+      <li>Implemented Pairwise Ranking Prompting (<a href="https://arxiv.org/abs/2306.17563">Qin et al., 2023</a>) as a standalone, zero-shot LLM reranking library that compares documents in pairs instead of scoring them individually, mitigating LLM position bias through bidirectional (A vs. B and B vs. A) comparisons.</li>
+      <li>Built three sorting strategies: <code>all_pair</code> (enumerate all pairs and aggregate by win ratio, O(N&sup2;) calls - order-insensitive), <code>heapsort</code> (LLM as comparator at O(N log N), largely order-insensitive), and <code>sliding_k</code> (bottom-up sliding window with stride 1 at O(K&middot;N) - favorable complexity but order-dependent).</li>
+      <li>Engineered support for any OpenAI-compatible API (OpenAI, Groq, local models) with structured generation, Pydantic validation, and a Haystack-based evaluation toolkit over <code>ir_datasets</code> (BM25 retrieves top-100 candidates, then PRP reranks).</li>
+      <li>Evaluated on FIQA, SciFact, NFCorpus, TREC-DL 2019, and TREC-DL 2020 with NDCG, MAP, Recall, and Precision across Mistral, Phi-3, and Llama-3.</li>
+      <li>Found Llama-3 with <code>all_pair</code> strongest across every dataset on NDCG@10, with <code>heapsort</code> the recommended quality/efficiency tradeoff.</li>
+    </ul>
+    <p class="result-label">Results · NDCG@10</p>
+    <div class="table-wrap">
+      <table class="vtable">
+        <thead>
+          <tr><th>Model</th><th>Method</th><th>FiQA</th><th>SciFact</th><th>NFCorpus</th><th>TREC-19</th><th>TREC-20</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Mistral</th><td>PRP &middot; all_pair</td><td class="num">0.4676</td><td class="num">0.6860</td><td class="num">0.4312</td><td class="num">0.7186</td><td class="num">0.6987</td></tr>
+          <tr><th>Phi-3</th><td>PRP &middot; all_pair</td><td class="num">0.4714</td><td class="num">0.7028</td><td class="num">0.4386</td><td class="num">0.7228</td><td class="num">0.7167</td></tr>
+          <tr><th>Llama-3</th><td>PRP &middot; heapsort</td><td class="num">0.4764</td><td class="num">0.7765</td><td class="num">0.4423</td><td class="num">0.7508</td><td class="num">0.7637</td></tr>
+          <tr><th>Llama-3</th><td>PRP &middot; sliding_k</td><td class="num">0.4793</td><td class="num">0.7852</td><td class="num">0.4503</td><td class="num">0.7511</td><td class="num">0.7642</td></tr>
+          <tr class="best"><th>Llama-3</th><td>PRP &middot; all_pair</td><td class="num">0.4992</td><td class="num">0.7912</td><td class="num">0.4658</td><td class="num">0.7623</td><td class="num">0.7671</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="project" id="llm-blender">
+    <div class="proj-head"><span class="num">11.</span><h2>LLM Blender</h2></div>
+    <div class="links">
+      <a class="paper" href="https://github.com/avnlp/llm-blender/blob/main/paper/llm_blender.pdf"><svg class="ic"><use href="#ic-paper"/></svg><span class="ptitle">LLM Ensembling with LLM-Blender</span></a>
+      <a href="https://github.com/avnlp/llm-blender"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/llm-blender</a>
+      <a href="https://deepwiki.com/avnlp/llm-blender"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Ensembling</span><span>PairRanker</span><span>GenFuser</span><span>Haystack</span><span>MixInstruct</span><span>BERTScore</span><span>BARTScore</span><span>BLEURT</span></div>
+    <ul class="points">
+      <li>Integrated LLM-Blender with Haystack RAG pipelines to ensemble the outputs of multiple LLMs into a single, higher-quality answer.</li>
+      <li>Implemented LLM-Blender's two-stage design: a PairRanker ranks candidate generations through pairwise comparison (encoding input and candidates with a RoBERTa cross-attention encoder to build a pairwise-comparison matrix), then a GenFuser seq2seq-fuses the top-K candidates conditioned on the input.</li>
+      <li>Built a custom <code>LLMBlenderRanker</code> Haystack component wrapping PairRanker, comparing each candidate against the input pairwise so subtle wording differences between models don't skew the ensemble - unlike MLM-scoring, SimCLS, or SummaReranker, which score candidates individually.</li>
+      <li>Ensembled Mistral-7B, Llama-3-8B, Phi-3-mini, OpenChat-3.5, Starling-LM-7B-alpha, and OpenHermes-2.5, benchmarking on MixInstruct and BillSum with BERTScore, BARTScore, and BLEURT.</li>
+      <li>Found that PairRanker ensembles of these newer open models outperform their individual outputs and exceed the original LLM-Blender authors' reported baselines on MixInstruct across all three metrics.</li>
+    </ul>
+    <p class="result-label">Results · MixInstruct · PairRanker (Llama-3-8B + Phi-3-mini + Mistral-7B)</p>
+    <div class="table-wrap narrow">
+      <table class="vtable">
+        <thead>
+          <tr><th>Configuration</th><th>BERTScore &uarr;</th><th>BARTScore &uarr;</th><th>BLEURT &uarr;</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>LLM-Blender authors (PairRanker)</th><td class="num">72.97</td><td class="num">&minus;3.14</td><td class="num">&minus;0.37</td></tr>
+          <tr class="best"><th>This work (PairRanker)</th><td class="num">75.83</td><td class="num">&minus;2.87</td><td class="num">&minus;0.26</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="project" id="rrf">
+    <div class="proj-head"><span class="num">12.</span><h2>RRF</h2></div>
+    <div class="links">
+      <a class="paper" href="https://github.com/avnlp/rrf/blob/main/paper/rankers_rrf.pdf"><svg class="ic"><use href="#ic-paper"/></svg><span class="ptitle">Rankers &amp; RRF Evaluation</span></a>
+      <a href="https://github.com/avnlp/rrf"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/rrf</a>
+      <a href="https://deepwiki.com/avnlp/rrf"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Rank Fusion</span><span>Hybrid Retrieval</span><span>Diversity Ranker</span><span>Lost-in-the-Middle</span><span>Similarity Ranker</span><span>Instructor-XL</span><span>BEIR</span></div>
+    <ul class="points">
+      <li>Evaluated rankers and Reciprocal Rank Fusion for LFQA/RAG pipelines, where context-window ordering and redundancy directly shape answer quality.</li>
+      <li>Implemented three rankers: a Diversity Ranker (maximizes document diversity via embedding similarity), a Lost-in-the-Middle Ranker (places the most relevant documents at the start and end of the prompt to counter the lost-in-the-middle effect), and a Transformers Similarity Ranker (cross-encoder query-document scoring).</li>
+      <li>Studied dense retrieval with INSTRUCTOR-XL and all-mpnet-base-v2 against hybrid retrieval that fuses BM25 sparse search with dense results via RRF, using bge-reranker-large (Similarity) and ms-marco-MiniLM-L-12-v2 (Diversity).</li>
+      <li>Benchmarked every retriever-and-ranker combination on the FIQA dataset using NDCG, MAP, Recall, and Precision.</li>
+      <li>Found the best results with INSTRUCTOR-XL and the Similarity Ranker, then Diversity, then Lost-in-the-Middle - and that instruction-tuned embeddings like INSTRUCTOR-XL outperform many ranker combinations by exploiting data-specific instructions.</li>
+    </ul>
+  </section>
+
+  <section class="project" id="hyperparameter-tuning">
+    <div class="proj-head"><span class="num">13.</span><h2>Effect of Optimizer Selection and Hyperparameter Tuning</h2></div>
+    <div class="links">
+      <a class="paper" href="https://github.com/avnlp/hyperparameter-tuning/blob/main/paper/optimizer_inclusions.pdf"><svg class="ic"><use href="#ic-paper"/></svg><span class="ptitle">Optimizer Inclusions</span></a>
+      <a href="https://github.com/avnlp/hyperparameter-tuning"><svg class="ic"><use href="#ic-repo"/></svg>avnlp/hyperparameter-tuning</a>
+      <a href="https://deepwiki.com/avnlp/hyperparameter-tuning"><svg class="ic"><use href="#ic-docs"/></svg>Documentation</a>
+    </div>
+    <div class="tags"><span>Optimizers</span><span>Adam</span><span>RMSProp</span><span>NAG</span><span>SGD</span><span>BERT</span><span>SQuAD</span><span>Summarization</span></div>
+    <ul class="points">
+      <li>Demonstrated how optimizer choice and the hyperparameter-tuning protocol jointly determine training efficiency and final model quality, with optimizer rankings highly sensitive to how thoroughly each optimizer is tuned.</li>
+      <li>Mapped the optimizer inclusion relationships - <code>SGD &sube; Momentum &sube; RMSProp</code>, <code>SGD &sube; Momentum &sube; Adam</code>, and <code>SGD &sube; Nesterov &sube; Nadam</code> - across SGD, Momentum, NAG, RMSProp, and Adam/AdamW, tuning learning rate, momentum, smoothing constant, and the &beta;1/&beta;2 moment-estimate decay rates.</li>
+      <li>Conducted experiments across three NLP tasks: Sentiment Analysis (Financial PhraseBank, StockTwits, FinGPT-Sentiment), Question Answering (SQuAD, CoQA, FIQA), and Summarization (Multi-News, BillSum).</li>
+      <li>Fine-tuned DistilBERT, BERT, FinBERT, RoBERTa, Llama-3, and Phi-3 for classification and QA, and BART, DistilBART, and T5 for summarization.</li>
+      <li>Found that with sufficient tuning a more expressive optimizer never underperforms its special cases - RMSProp and AdamW never lost to SGD, Momentum, or Nesterov - confirming that inclusion relationships predict optimizer performance as tuning approaches optimality.</li>
+    </ul>
+  </section>
+
+  </div>
+</main>
+</div>
+
+<footer>
+  <span>AVNLP</span>
+  <a href="https://github.com/avnlp">github.com/avnlp</a>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Scroll to top" title="Back to top">&uarr;</button>
+
+<script>
+  (function(){
+    var sections = Array.prototype.slice.call(document.querySelectorAll('main .project'));
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if ('IntersectionObserver' in window && !reduce) {
+      var rev = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) { e.target.classList.add('in'); rev.unobserve(e.target); }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+      sections.forEach(function(s){ rev.observe(s); });
+    } else {
+      sections.forEach(function(s){ s.classList.add('in'); });
+    }
+
+    /* ---- sticky TOC: scrollspy + mobile toggle ---- */
+    var rail = document.getElementById('toc');
+    var nav = document.getElementById('toc-nav');
+    var railLinks = nav ? Array.prototype.slice.call(nav.querySelectorAll('a')) : [];
+    var linkById = {};
+    railLinks.forEach(function(a){ linkById[a.getAttribute('href').slice(1)] = a; });
+    var curLabel = rail ? rail.querySelector('.toc-current .cur') : null;
+    var activeId = null;
+
+    function setActive(id){
+      if (!id || id === activeId || !linkById[id]) return;
+      activeId = id;
+      railLinks.forEach(function(a){ a.classList.remove('active'); a.removeAttribute('aria-current'); });
+      var a = linkById[id];
+      a.classList.add('active');
+      a.setAttribute('aria-current', 'true');
+      if (curLabel) { var lbl = a.querySelector('.lbl'); curLabel.textContent = lbl ? lbl.textContent : a.textContent; }
+      if (nav && nav.scrollHeight > nav.clientHeight) {
+        var top = a.offsetTop, bot = top + a.offsetHeight;
+        if (top < nav.scrollTop) nav.scrollTop = top - 8;
+        else if (bot > nav.scrollTop + nav.clientHeight) nav.scrollTop = bot - nav.clientHeight + 8;
+      }
+    }
+
+    if (railLinks.length && 'IntersectionObserver' in window) {
+      var spy = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if (e.isIntersecting) setActive(e.target.id); });
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: 0 });
+      sections.forEach(function(s){ spy.observe(s); });
+    }
+    if (sections.length) setActive(sections[0].id);
+
+    /* mobile: collapsible "Contents" bar */
+    var toggle = rail ? rail.querySelector('.toc-current') : null;
+    function closeRail(){ if (rail) rail.classList.remove('open'); if (toggle) toggle.setAttribute('aria-expanded', 'false'); }
+    if (toggle) {
+      toggle.addEventListener('click', function(e){
+        e.stopPropagation();
+        var open = rail.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      railLinks.forEach(function(a){ a.addEventListener('click', closeRail); });
+      document.addEventListener('click', function(e){ if (rail.classList.contains('open') && !rail.contains(e.target)) closeRail(); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeRail(); });
+    }
+
+    var toTop = document.getElementById('toTop');
+    if (toTop) {
+      var lastId = sections.length ? sections[sections.length - 1].id : null;
+      var onScroll = function(){
+        toTop.classList.toggle('show', window.pageYOffset > 500);
+        if (lastId && (window.innerHeight + window.pageYOffset >= document.body.scrollHeight - 4)) setActive(lastId);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      toTop.addEventListener('click', function(){
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      });
+    }
+  })();
+</script>
+</body>
+</html>
