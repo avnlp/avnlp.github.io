@@ -37,7 +37,7 @@
   }
 
   :root {
-    --bg: #FAFAF8;
+    --bg: #fdfdf7;
     --bg-tint: #F0EFEB;
     --ink: #111111;
     --text: #1a1a1a;
@@ -220,7 +220,7 @@
     color: var(--accent);
   }
   .toc-nav a.active {
-    background: color-mix(in srgb, var(--accent) 12%, #fff);
+    background: color-mix(in srgb, var(--accent) 12%, var(--bg));
     color: var(--accent);
     font-weight: 600;
   }
@@ -242,7 +242,7 @@
   @media (max-width: 960px) {
     .shell {
       grid-template-columns: 1fr;
-      margin-top: 0;
+      margin-top: 36px;
     }
     .toc-rail {
       top: 0;
@@ -367,13 +367,13 @@
     padding: 7px 14px 7px 12px;
     border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--tag-border));
     border-radius: 8px;
-    background: color-mix(in srgb, var(--accent) 10%, #fff);
+    background: color-mix(in srgb, var(--accent) 10%, var(--bg));
     transition: border-color .18s ease, color .18s ease, background .18s ease;
   }
   .links a:hover {
     border-color: var(--accent);
     color: var(--accent-hover);
-    background: color-mix(in srgb, var(--accent) 16%, #fff);
+    background: color-mix(in srgb, var(--accent) 16%, var(--bg));
   }
   .links .ic { width: 15px; height: 15px; flex: none; }
   /* ---------- paper chip: same tint as repo, distinguished by serif title ---------- */
