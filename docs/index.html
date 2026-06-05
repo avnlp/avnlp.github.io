@@ -90,7 +90,7 @@
   /* ---------- hero ---------- */
   header.hero {
     text-align: center;
-    padding: clamp(64px, 14vw, 120px) clamp(20px, 5vw, 40px) 0;
+    padding: clamp(48px, 9vw, 84px) clamp(20px, 5vw, 40px) 0;
   }
 
   h1.title {
@@ -125,30 +125,50 @@
     max-width: 60ch;
   }
 
-  /* ---------- nav links ---------- */
-  .hero-nav {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-top: 28px;
-  }
-  .hero-nav a {
+  /* ---------- contributors (peer of .topics, distinct color) ---------- */
+  .hero-by {
     font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     letter-spacing: .1em;
     text-transform: uppercase;
-    text-decoration: none;
-    color: var(--accent);
-    padding: 8px 20px;
-    border: 1.5px solid var(--accent);
-    border-radius: 6px;
-    transition: background .2s ease, color .2s ease, border-color .2s ease;
+    color: var(--secondary);
+    margin: 16px auto 0;
   }
-  .hero-nav a:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
+  .hero-by a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color .15s ease;
+  }
+  .hero-by a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .hero-by .sep {
+    margin: 0 12px;
+    color: var(--rule-strong);
+  }
+
+  /* ---------- GitHub link (typographic, peer of .topics / .hero-by) ---------- */
+  .hero-gh {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 18px auto 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity .15s ease;
+  }
+  .hero-gh svg { width: 14px; height: 14px; display: block; }
+  .hero-gh:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   /* ---------- layout shell: TOC rail + content ---------- */
@@ -600,7 +620,7 @@
     .hero h1.title { animation: rise .6s ease both; }
     .hero .tagline { animation: rise .65s .08s ease both; }
     .hero .topics { animation: rise .65s .12s ease both; }
-    .hero-nav { animation: rise .65s .18s ease both; }
+    .hero .hero-by { animation: rise .65s .18s ease both; }
     .project {
       opacity: 0;
       transform: translateY(12px);
@@ -619,7 +639,27 @@
       "name": "AVNLP",
       "url": "https://avnlp.github.io/",
       "logo": { "@type": "ImageObject", "url": "https://avnlp.github.io/logo.png", "width": 200, "height": 200 },
-      "sameAs": ["https://github.com/avnlp", "https://huggingface.co/avnlp"]
+      "sameAs": ["https://github.com/avnlp", "https://huggingface.co/avnlp"],
+      "member": [
+        { "@id": "https://avnlp.github.io/#ashwin" },
+        { "@id": "https://avnlp.github.io/#varun" }
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://avnlp.github.io/#ashwin",
+      "name": "Ashwin Mathur",
+      "url": "https://github.com/awinml",
+      "sameAs": ["https://github.com/awinml"],
+      "memberOf": { "@id": "https://avnlp.github.io/#org" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://avnlp.github.io/#varun",
+      "name": "Varun Mathur",
+      "url": "https://github.com/vrunm",
+      "sameAs": ["https://github.com/vrunm"],
+      "memberOf": { "@id": "https://avnlp.github.io/#org" }
     },
     {
       "@type": "WebSite",
@@ -697,10 +737,15 @@
 <header class="hero">
   <h1 class="title">AVNLP</h1>
   <p class="topics">Retrieval &amp; Ranking &middot; RAG &middot; Agents &middot; LLM Training &amp; RL Alignment &middot; Domain-Specific AI</p>
-  <nav class="hero-nav" aria-label="Primary">
-    <a href="#work">Projects</a>
-    <a href="https://github.com/avnlp">GitHub</a>
-  </nav>
+  <p class="hero-by">
+    <a href="https://github.com/awinml" rel="author">Ashwin Mathur</a>
+    <span class="sep" aria-hidden="true">&middot;</span>
+    <a href="https://github.com/vrunm" rel="author">Varun Mathur</a>
+  </p>
+  <a class="hero-gh" href="https://github.com/avnlp" aria-label="AVNLP on GitHub" title="AVNLP on GitHub">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+    github.com/avnlp
+  </a>
 </header>
 
 <div class="shell">
